@@ -1,0 +1,207 @@
+RFC 5424
+    https://tools.ietf.org/html/rfc5424
+
+Analyze syslog messages
+    https://blog.datalust.co/seq-input-syslog/
+
+Understanding Syslog Formats: A Comprehensive Guide
+
+    https://www.atatus.com/blog/syslog-formats/
+
+        Priority (PRIVAL): A numerical value that combines the facility and severity level of the message. It is enclosed in angle brackets (< >).
+
+        Timestamp: Indicates the time when the message was generated. It is typically in the format of MMM DD HH:MM:SS (month, day, hour, minute, second).
+
+        Hostname: Identifies the origin of the syslog message, indicating the system or device that generated the log.
+
+        Tag: Tag or Process ID represents the application or process that generated the message. It is often user-defined.
+
+        Message: The actual log information or event description.
+
+
+        <PRIVAL>VERSION TIMESTAMP HOSTNAME APP-NAME PROCID MSGID [STRUCTURED-DATA] MESSAGE
+
+        <165>1 2003-10-11T22:14:15.003Z myhostname myapp 1234 ID47 - [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] An application event log entry...
+
+        <165>: Priority value, where 165 is the combination of facility (16) and severity (5).
+
+        1: Version number of the syslog protocol being used.
+
+        2003-10-11T22:14:15.003Z: Timestamp in the format of ISO 8601.
+
+        myhostname: Hostname identifying the system or device that generated the log.
+
+        myapp: Tag indicating the application or process that generated the message.
+
+        1234: Process ID (PID) of the application.
+
+        ID47: Message ID.
+
+        -: Structured data field is optional and absent in this example.
+
+        [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"]: Structured data providing additional information in a key-value pair format.
+
+        An application event log entry...: The actual log message or event description.
+
+Timestamp
+    A formalized timestamp that denotes the date and time when the event is logged and includes the syslog generation time with the year and milliseconds with respect to the time zone.
+
+    The following example shows the date and time format in RFC 5424.
+    2020-08-13T22:14:15.003Z represents August 13, 2020 at 10:14 PM and 15 seconds, 3 milliseconds into the next second. The timestamp is in UTC. The timestamp provides millisecond resolution.
+    Note: The suffix "Z", when applied to a time, denotes a Coordinated Universal Time (UTC) offset of 00:00.
+
+    time-stamp is the ISO 8601 compatible standard timestamp format (yyyy-mm-ddThh:mm:ss+-ZONE)
+
+RFC5424 syslog Message Format introduction
+    https://hackmd.io/@njjack/syslogformat
+
+    Numerical         Severity
+    code
+                  0                 Emergency: system is unusable
+                  1                 Alert: action must be taken immediately
+                  2                 Critical: critical conditions
+                  3                 Error: error conditions
+                  4                 Warning: warning conditions
+                  5                 Notice: normal but significant condition
+                  6                 Informational: informational messages
+                  7                 Debug: debug-level messages
+
+syslog messages examples
+
+    with no STRUCTURED-DATA
+
+    <34>1 2003-10-11T22:14:15.003Z mymachine.example.com su - ID47 - BOM'su root' failed for lonvick on /dev/pts/8
+
+    PRI: <34>, Facility: 4, Severity: 2
+    VERSION: 1
+    timestamp:2003-10-11T22:14:15.003Z
+    HOSTNAME: mymachine.example.com.
+    APP-NAME: su
+    PROCID: unknown, displayed as NULVALUE -
+    MSGID: ID47.
+    MSG is 'su root' failed for lonvick..., encoded in UTF-8.
+    There is no STRUCTURED-DATA, displayed as NULVALUE -
+
+    with STRUCTURED-DATA
+
+    <165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource= "Application" eventID="1011"] BOMAn application event log entry...
+
+    with no MSG
+
+    <165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource= "Application" eventID="1011"][examplePriority@32473 class="high"]
+
+Syslog sidecar
+    https://github.com/g41797/syslogsidecar
+
+THE SYSLOG HELL
+    https://techblog.bozho.net/the-syslog-hell/#:~:text=RFC5424%20defines%20a%20key-value,define%20their%20own%20message%20formats.
+
+syslog.h
+- https://sites.uclouvain.be/SystInfo/usr/include/sys/syslog.h.html
+
+    Severity Levels:
+
+        #define        LOG_EMERG       0        /* system is unusable */
+        #define        LOG_ALERT       1        /* action must be taken immediately */
+        #define        LOG_CRIT        2        /* critical conditions */
+        #define        LOG_ERR         3        /* error conditions */
+        #define        LOG_WARNING     4        /* warning conditions */
+        #define        LOG_NOTICE      5        /* normal but significant condition */
+        #define        LOG_INFO        6        /* informational */
+        #define        LOG_DEBUG       7        /* debug-level messages */
+
+        "debug", "info", "notice", "warning", "err", "crit", "alert", "emerg"
+
+
+
+    Facility codes:
+
+        #define        LOG_KERN        (0<<3)        /* kernel messages */
+        #define        LOG_USER        (1<<3)        /* random user-level messages */
+        #define        LOG_MAIL        (2<<3)        /* mail system */
+        #define        LOG_DAEMON      (3<<3)        /* system daemons */
+        #define        LOG_AUTH        (4<<3)        /* security/authorization messages */
+        #define        LOG_SYSLOG      (5<<3)        /* messages generated internally by syslogd */
+        #define        LOG_LPR         (6<<3)        /* line printer subsystem */
+        #define        LOG_NEWS        (7<<3)        /* network news subsystem */
+        #define        LOG_UUCP        (8<<3)        /* UUCP subsystem */
+        #define        LOG_CRON        (9<<3)        /* clock daemon */
+        #define        LOG_AUTHPRIV    (10<<3)       /* security/authorization messages (private) */
+        #define        LOG_FTP         (11<<3)       /* ftp daemon */
+
+        /* other codes through 15 reserved for system use */
+
+        #define        LOG_LOCAL0        (16<<3)     /* reserved for local use */
+        #define        LOG_LOCAL1        (17<<3)     /* reserved for local use */
+        #define        LOG_LOCAL2        (18<<3)     /* reserved for local use */
+        #define        LOG_LOCAL3        (19<<3)     /* reserved for local use */
+        #define        LOG_LOCAL4        (20<<3)     /* reserved for local use */
+        #define        LOG_LOCAL5        (21<<3)     /* reserved for local use */
+        #define        LOG_LOCAL6        (22<<3)     /* reserved for local use */
+        #define        LOG_LOCAL7        (23<<3)     /* reserved for local use */
+
+        "kern"      0       kernel messages
+        "user"      1       random user-level messages
+        "mail"      2       mail system
+        "daemon"    3       system daemons
+        "auth"      4       security/authorization messages
+        "syslog"    5       messages generated internally by syslogd
+        "lpr"       6       line printer subsystem
+        "news"      7       network news subsystem
+        "uucp"      8       UUCP subsystem
+        "cron"      9       clock daemon
+        "authpriv"  10      security/authorization messages (private)
+        "ftp"       11      ftp daemon
+
+        "local0"    16      local use 0
+        "local1"    17
+        "local2"    18
+        "local3"    19
+        "local4"    20
+        "local5"    21
+        "local6"    22
+        "local7"    23      local use 7
+
+
+    Priority = Facility * 8 + Severity Level
+
+
+Syslog client
+   Arduino C++
+        https://github.com/arcao/Syslog
+        https://github.com/arduino-libraries/Ethernet/tree/master/src
+
+    C
+        https://code.google.com/archive/p/eventlog-to-syslog/
+
+    Go
+        https://github.com/RackSec/srslog
+
+        https://cs.opensource.google/go/go/+/refs/tags/go1.22.6:src/log/syslog/
+        https://pkg.go.dev/log/syslog
+
+zig-time
+    https://github.com/nektro/zig-time
+
+Zig network lib
+   https://github.com/ikskuh/zig-network
+
+Zig log
+    https://github.com/ziglang/zig/blob/master/lib/std/log.zig#L7
+
+Examples of network code
+    https://github.com/malcolmstill/zig-amqp ++++++++
+    https://github.com/taskforcesh/bullmq-redis
+    https://github.com/nmeum/zoap
+    https://github.com/marler8997/netpunch
+    https://github.com/marler8997/dbus-zig
+    https://github.com/karlseguin/smtp_client.zig
+    https://github.com/karlseguin/websocket.zig
+    https://github.com/karlseguin/mqttz
+
+Creating UDP server from scratch in Zig
+    https://blog.reilly.dev/creating-udp-server-from-scratch-in-zig
+    https://github.com/rofrol/udp-server-from-scratch-in-zig
+
+String Builder / Buffer For Zig
+    https://github.com/karlseguin/buffer.zig
