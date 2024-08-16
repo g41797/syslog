@@ -1,5 +1,6 @@
 //---------------------------------
 const std   = @import("std");
+const mem   = std.mem;
 const testing   = std.testing;
 //---------------------------------
 
@@ -54,6 +55,49 @@ const testing   = std.testing;
 // DIGIT           = %d48 / NONZERO-DIGIT
 // NILVALUE        = "-"
 
+const Rfc5424Error = error{
+    TooLong,
+};
+
+fn ShortString(comptime length: u8) type {
+
+    return struct {
+        items: [length]u8   = undefined,
+        len : usize         = length,
+        string: ?[]u8       = null,
+
+        const Self = @This();
+
+        fn fillFrom(self: *Self, src: []const u8) Rfc5424Error!usize {
+
+            const currlen = src.len;
+            const maxlen = self.*.items.len;
+
+            if (currlen > maxlen) return Rfc5424Error.TooLong;
+
+            self.*.len = src.len;
+
+            if(src.len > 0) {
+                @memset(&self.*.items, 0);
+                std.mem.copyForwards(u8, &self.*.items, src);
+            }
+
+            self.*.string = self.*.items[0..src.len];
+            return src.len;
+        }
+
+        fn content(self: *Self) ?[]u8 {
+            return self.*.string;
+        }
+
+    };
+}
+
+pub const MAX_HOST_NAME: u8 = 255;
+pub const MAX_APP_NAME: u8  = 48;
+pub const MAX_PROCID: u8    = 128;
+pub const MAX_MSGID: u8     = 32;
+pub const MAX_TIMESTAMP: u8 = 48;
 
 const Severity = enum(u3) {
     emerg   = 0,
@@ -92,3 +136,61 @@ const Facility = enum(u8) {
 
 inline fn priority(fcl: Facility, svr: Severity) u8 { return fcl + svr; }
 
+
+const AppName   = ShortString(MAX_APP_NAME);
+const HostName  = ShortString(MAX_HOST_NAME);
+const ProcID    = ShortString(MAX_PROCID);
+
+pub const Application = struct {
+
+    const Self = @This();
+
+    app_name:   AppName,
+    host_name:  HostName,
+    procid:     ProcID,
+    fcl:        Facility    = undefined,
+
+
+    pub fn init(app: *Application, name: []const u8, fcl: Facility) Rfc5424Error!bool {
+
+        try app.*.app_name.fillFrom(name);
+
+        //TODO: Get host name & process id
+
+        app.*.fcl = fcl;
+
+        return true;
+    }
+};
+
+//----------------
+//  Tests section
+//----------------
+
+test "short string " {
+
+    const maxLen:u8 = 16;
+    const string16 = ShortString(maxLen);
+
+    var   testStr: string16 = undefined;
+
+    const longStr = "12345678901234567890";
+
+    try testing.expectError(
+        Rfc5424Error.TooLong,
+        testStr.fillFrom(longStr));
+
+    const shortStr = "12345678";
+
+    try testing.expectEqual(
+        shortStr.len,
+        testStr.fillFrom(shortStr));
+
+    try testing.expect(std.mem.eql(u8, shortStr, testStr.content().?));
+}
+
+// test "application init" {
+//     var logger: Application = undefined;
+//
+//     try testing.expect(logger.init("logger", Facility.local0));
+// }

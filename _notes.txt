@@ -237,3 +237,21 @@ String Builder / Buffer For Zig
 Unicode in Zig
     https://zig.news/dude_the_builder/series/6
 
+Zig Strings
+    https://www.reddit.com/r/Zig/comments/rxmg9p/zig_strings_in_5_minutes/
+    https://www.huy.rocks/everyday/01-04-2022-zig-strings-in-5-minutes
+
+    https://rguiscard.medium.com/zig-tutorial-2-b0a027c4c652
+    https://github.com/JakubSzark/zig-string
+
+
+Get a tarball of any repo directly
+
+    wget -O full-path-to-result.tar.gz https://github.com/User/repo/archive/master.tar.gz
+
+    and master can be any ref, e.g. a tag.
+
+    e.g. wget -O /tmp/sputniik.tar.gz   https://github.com/g41797/sputnik/archive/master.tar.gz
+
+Interface
+    https://github.com/mitchellh/libxev/blob/main/src/main.zig
