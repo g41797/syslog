@@ -2,6 +2,9 @@
 const std   = @import("std");
 const mem   = std.mem;
 const testing   = std.testing;
+const string   = @import("shortstring.zig");
+const StringError   = string.StringError;
+const ShortString   = string.ShortString;
 //---------------------------------
 
 // SYSLOG-MSG      = HEADER SP STRUCTURED-DATA [SP MSG]
@@ -55,43 +58,6 @@ const testing   = std.testing;
 // DIGIT           = %d48 / NONZERO-DIGIT
 // NILVALUE        = "-"
 
-const Rfc5424Error = error{
-    TooLong,
-};
-
-fn ShortString(comptime length: u8) type {
-
-    return struct {
-        items: [length]u8   = undefined,
-        len : usize         = length,
-        string: ?[]u8       = null,
-
-        const Self = @This();
-
-        fn fillFrom(self: *Self, src: []const u8) Rfc5424Error!usize {
-
-            const currlen = src.len;
-            const maxlen = self.*.items.len;
-
-            if (currlen > maxlen) return Rfc5424Error.TooLong;
-
-            self.*.len = src.len;
-
-            if(src.len > 0) {
-                @memset(&self.*.items, 0);
-                std.mem.copyForwards(u8, &self.*.items, src);
-            }
-
-            self.*.string = self.*.items[0..src.len];
-            return src.len;
-        }
-
-        fn content(self: *Self) ?[]u8 {
-            return self.*.string;
-        }
-
-    };
-}
 
 pub const MAX_HOST_NAME: u8 = 255;
 pub const MAX_APP_NAME: u8  = 48;
@@ -151,7 +117,7 @@ pub const Application = struct {
     fcl:        Facility    = undefined,
 
 
-    pub fn init(app: *Application, name: []const u8, fcl: Facility) Rfc5424Error!bool {
+    pub fn init(app: *Application, name: []const u8, fcl: Facility) StringError!bool {
 
         try app.*.app_name.fillFrom(name);
 
@@ -167,30 +133,9 @@ pub const Application = struct {
 //  Tests section
 //----------------
 
-test "short string " {
 
-    const maxLen:u8 = 16;
-    const string16 = ShortString(maxLen);
+test "application init" {
+    var logger: Application = undefined;
 
-    var   testStr: string16 = undefined;
-
-    const longStr = "12345678901234567890";
-
-    try testing.expectError(
-        Rfc5424Error.TooLong,
-        testStr.fillFrom(longStr));
-
-    const shortStr = "12345678";
-
-    try testing.expectEqual(
-        shortStr.len,
-        testStr.fillFrom(shortStr));
-
-    try testing.expect(std.mem.eql(u8, shortStr, testStr.content().?));
+    try testing.expect(logger.init("logger", Facility.local0));
 }
-
-// test "application init" {
-//     var logger: Application = undefined;
-//
-//     try testing.expect(logger.init("logger", Facility.local0));
-// }
