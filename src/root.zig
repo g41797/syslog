@@ -1,10 +1,11 @@
-const std = @import("std");
-const testing = std.testing;
+//---------------------------------
+const std       =  @import("std");
+const testing       = std.testing;
 
-export fn add(a: i32, b: i32) i32 {
-    return a + b;
-}
+pub const rfc5424       = @import("rfc5424.zig");
+pub const shortstring       = @import("shortstring.zig");
+//---------------------------------
 
-test "basic add functionality" {
-    try testing.expect(add(3, 7) == 10);
+test {
+    @import("std").testing.refAllDecls(@This());
 }

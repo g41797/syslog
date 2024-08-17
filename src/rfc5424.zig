@@ -117,15 +117,15 @@ pub const Application = struct {
     fcl:        Facility    = undefined,
 
 
-    pub fn init(app: *Application, name: []const u8, fcl: Facility) StringError!bool {
+    pub fn init(app: *Application, name: []const u8, fcl: Facility) StringError!void {
 
-        try app.*.app_name.fillFrom(name);
+        _ = app.*.app_name.fillFrom(name) catch |err| return err;
 
         //TODO: Get host name & process id
 
         app.*.fcl = fcl;
 
-        return true;
+        return;
     }
 };
 
@@ -137,5 +137,5 @@ pub const Application = struct {
 test "application init" {
     var logger: Application = undefined;
 
-    try testing.expect(logger.init("logger", Facility.local0));
+    logger.init("logger", Facility.local0) catch |err| return err;
 }

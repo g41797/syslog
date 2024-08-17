@@ -17,7 +17,7 @@ pub fn ShortString(comptime length: u8) type {
 
         const Self = @This();
 
-        fn fillFrom(self: *Self, src: []const u8) StringError!usize {
+        pub fn fillFrom(self: *Self, src: []const u8) StringError!usize {
 
             const currlen = src.len;
             const maxlen = self.*.items.len;
@@ -35,7 +35,7 @@ pub fn ShortString(comptime length: u8) type {
             return src.len;
         }
 
-        fn content(self: *Self) ?[]u8 {
+        pub fn content(self: *Self) ?[]u8 {
             return self.*.string;
         }
 
