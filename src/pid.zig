@@ -1,5 +1,5 @@
 //---------------------------------
-const std   	        = @import("std");
+const std               = @import("std");
 const builtin           = @import("builtin");
 const process           = std.process;
 const windows           = std.os.windows;
@@ -39,9 +39,7 @@ pub fn storePID(prcid: *ProcID) !void {
     switch (native_os) {
         . wasi      => unreachable,
         else        => {
-                            prcid.*.string = try std.fmt.bufPrint(&prcid.*.items, "{d}", .{currPID});
-                            prcid.*.len = prcid.*.string.?.len;
-                            return;
+                            return prcid.bufPrint("{d}", .{currPID});
                        },
     }
 }

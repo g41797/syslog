@@ -31,6 +31,12 @@ pub fn ShortString(comptime length: u8) type {
             return src.len;
         }
 
+        pub fn bufPrint(self: *Self, comptime fmt: []const u8, args: anytype) !void {
+            self.*.string = try std.fmt.bufPrint(&self.*.items, fmt, args);
+            self.*.len = self.*.string.?.len;
+            return;
+        }
+
         pub fn content(self: *Self) ?[]u8 {
             return self.*.string;
         }
@@ -58,4 +64,9 @@ test "short string " {
         testStr.fillFrom(shortStr));
 
     try testing.expect(std.mem.eql(u8, shortStr, testStr.content().?));
+
+    try testing.expectError(
+        error.NoSpaceLeft,
+        testStr.bufPrint("{s}-{s}-{s}", .{shortStr, shortStr, shortStr}));
+
 }
