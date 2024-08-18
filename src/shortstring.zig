@@ -1,12 +1,8 @@
 //---------------------------------
-const std   = @import("std");
-const mem   = std.mem;
+const std   	= @import("std");
+const mem   	= std.mem;
 const testing   = std.testing;
 //---------------------------------
-
-pub const StringError = error{
-    TooLong,
-};
 
 pub fn ShortString(comptime length: u8) type {
 
@@ -17,12 +13,12 @@ pub fn ShortString(comptime length: u8) type {
 
         const Self = @This();
 
-        pub fn fillFrom(self: *Self, src: []const u8) StringError!usize {
+        pub fn fillFrom(self: *Self, src: []const u8) error{NoSpaceLeft}!usize {
 
             const currlen = src.len;
             const maxlen = self.*.items.len;
 
-            if (currlen > maxlen) return StringError.TooLong;
+            if (currlen > maxlen) return error.NoSpaceLeft;
 
             self.*.len = src.len;
 
@@ -52,7 +48,7 @@ test "short string " {
     const longStr = "12345678901234567890";
 
     try testing.expectError(
-        StringError.TooLong,
+        error.NoSpaceLeft,
         testStr.fillFrom(longStr));
 
     const shortStr = "12345678";

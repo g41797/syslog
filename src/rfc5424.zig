@@ -1,12 +1,13 @@
 //---------------------------------
-const std   = @import("std");
-const mem   = std.mem;
-const testing   = std.testing;
-const string   = @import("shortstring.zig");
-const StringError   = string.StringError;
+const std           = @import("std");
+const mem           = std.mem;
+const testing       = std.testing;
+const string        = @import("shortstring.zig");
+const pid        	= @import("pid.zig");
 const ShortString   = string.ShortString;
 //---------------------------------
 
+//--------------------------------------------------------------------------------------
 // SYSLOG-MSG      = HEADER SP STRUCTURED-DATA [SP MSG]
 //
 // HEADER          = PRI VERSION SP TIMESTAMP SP HOSTNAME SP APP-NAME SP PROCID SP MSGID
@@ -57,6 +58,7 @@ const ShortString   = string.ShortString;
 // NONZERO-DIGIT   = %d49-57
 // DIGIT           = %d48 / NONZERO-DIGIT
 // NILVALUE        = "-"
+//--------------------------------------------------------------------------------------
 
 
 pub const MAX_HOST_NAME: u8 = 255;
@@ -105,7 +107,6 @@ inline fn priority(fcl: Facility, svr: Severity) u8 { return fcl + svr; }
 
 const AppName   = ShortString(MAX_APP_NAME);
 const HostName  = ShortString(MAX_HOST_NAME);
-const ProcID    = ShortString(MAX_PROCID);
 
 pub const Application = struct {
 
@@ -113,20 +114,24 @@ pub const Application = struct {
 
     app_name:   AppName,
     host_name:  HostName,
-    procid:     ProcID,
+    procid:     pid.ProcID,
     fcl:        Facility    = undefined,
 
 
-    pub fn init(app: *Application, name: []const u8, fcl: Facility) StringError!void {
+    pub fn init(app: *Application, name: []const u8, fcl: Facility) error{NoSpaceLeft}!void {
 
         _ = app.*.app_name.fillFrom(name) catch |err| return err;
 
-        //TODO: Get host name & process id
+        _ = try pid.storePID(&app.*.procid);
 
+        //TODO: Get host name
+        // https://stackoverflow.com/questions/78710469/how-to-get-the-host-name-in-zig
+        //
         app.*.fcl = fcl;
 
         return;
     }
+
 };
 
 //----------------
@@ -137,5 +142,5 @@ pub const Application = struct {
 test "application init" {
     var logger: Application = undefined;
 
-    logger.init("logger", Facility.local0) catch |err| return err;
+    _ = try logger.init("logger", Facility.local0);
 }
