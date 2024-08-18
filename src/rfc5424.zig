@@ -118,9 +118,9 @@ pub const Application = struct {
     fcl:        Facility    = undefined,
 
 
-    pub fn init(app: *Application, name: []const u8, fcl: Facility) error{NoSpaceLeft}!void {
+    pub fn init(app: *Application, name: []const u8, fcl: Facility) !void {
 
-        _ = app.*.app_name.fillFrom(name) catch |err| return err;
+        _ = try app.*.app_name.fillFrom(name);
 
         _ = try pid.storePID(&app.*.procid);
 
