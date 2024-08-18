@@ -24,7 +24,7 @@ pub const PID = switch (native_os) {
 
 pub fn getPID() PID {
     switch (native_os) {
-        .windows    => return std.os.windows.kernel32.GetCurrentProcessId(),
+        .windows    => return GetCurrentProcessId(),
         . wasi      => unreachable,
         else        => return linux.getpid(),
     }
