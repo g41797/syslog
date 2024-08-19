@@ -5,6 +5,8 @@ const testing       = std.testing;
 const string        = @import("shortstring.zig");
 const pid        	= @import("pid.zig");
 const ShortString   = string.ShortString;
+const builtin       = @import("builtin");
+const native_os     = builtin.os.tag;
 //---------------------------------
 
 //--------------------------------------------------------------------------------------
@@ -61,13 +63,10 @@ const ShortString   = string.ShortString;
 //--------------------------------------------------------------------------------------
 
 
-pub const MAX_HOST_NAME: u8 = 255;
-pub const MAX_APP_NAME: u8  = 48;
-pub const MAX_PROCID: u8    = 128;
 pub const MAX_MSGID: u8     = 32;
 pub const MAX_TIMESTAMP: u8 = 48;
 
-const Severity = enum(u3) {
+pub const Severity = enum(u3) {
     emerg   = 0,
     alert   = 1,
     crit    = 2,
@@ -78,7 +77,7 @@ const Severity = enum(u3) {
     debug   = 7
 };
 
-const Facility = enum(u8) {
+pub const Facility = enum(u8) {
     kern        = (0<<3),
     user        = (1<<3),
     mail        = (2<<3),
@@ -102,45 +101,5 @@ const Facility = enum(u8) {
     local7      = (23<<3)
 };
 
-inline fn priority(fcl: Facility, svr: Severity) u8 { return fcl + svr; }
+pub inline fn priority(fcl: Facility, svr: Severity) u8 { return fcl + svr; }
 
-
-const AppName   = ShortString(MAX_APP_NAME);
-const HostName  = ShortString(MAX_HOST_NAME);
-
-pub const Application = struct {
-
-    const Self = @This();
-
-    app_name:   AppName,
-    host_name:  HostName,
-    procid:     pid.ProcID,
-    fcl:        Facility    = undefined,
-
-
-    pub fn init(app: *Application, name: []const u8, fcl: Facility) !void {
-
-        _ = try app.*.app_name.fillFrom(name);
-
-        _ = try pid.storePID(&app.*.procid);
-
-        //TODO: Get host name
-        // https://stackoverflow.com/questions/78710469/how-to-get-the-host-name-in-zig
-        //
-        app.*.fcl = fcl;
-
-        return;
-    }
-
-};
-
-//----------------
-//  Tests section
-//----------------
-
-
-test "application init" {
-    var logger: Application = undefined;
-
-    _ = try logger.init("logger", Facility.local0);
-}

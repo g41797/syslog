@@ -259,3 +259,7 @@ Interface
 How to test several zig files etc
     https://github.com/ZystemOS/pluto
 
+Allocators explained
+    https://dayvster.com/blog/zig-allocators-explained/
+
+

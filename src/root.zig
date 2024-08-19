@@ -5,6 +5,7 @@ const testing           = std.testing;
 pub const rfc5424       = @import("rfc5424.zig");
 pub const shortstring   = @import("shortstring.zig");
 pub const pid           = @import("pid.zig");
+pub const application   = @import("application.zig");
 //---------------------------------
 
 test {
