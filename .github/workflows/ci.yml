@@ -2,6 +2,9 @@ name: CI
 
 on: [push, pull_request]
 
+env:
+  HOSTNAME: ANYHOSTNAME
+
 jobs:
   build:
     name: Build and test
@@ -24,10 +27,5 @@ jobs:
           version: master
           cache: false
 
-      - if: matrix.os == 'windows'
-        run: zig test src/root.zig
+      - run: zig test src/root.zig
 
-      - if: matrix.os == 'linux'
-        run: zig test src/root.zig
-        env:
-          HOSTNAME: ANYHOSTNAME
