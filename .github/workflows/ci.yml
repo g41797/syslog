@@ -28,6 +28,6 @@ jobs:
         run: zig test src/root.zig
 
       - if: matrix.os == 'linux'
-        run:
-            export HOSTNAME=ANY 
-            zig test src/root.zig
+        run: zig test src/root.zig
+        env:
+          HOSTNAME: ANYHOSTNAME
