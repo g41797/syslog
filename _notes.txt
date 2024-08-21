@@ -208,8 +208,22 @@ Syslog client
         https://cs.opensource.google/go/go/+/refs/tags/go1.22.6:src/log/syslog/
         https://pkg.go.dev/log/syslog
 
+State of datetime handling in Zig?
+    https://ziggit.dev/t/state-of-datetime-handling-in-zig/2149
+
+Zig Datetime
+    https://github.com/frmdstryr/zig-datetime
+    formatISO8601: https://github.com/frmdstryr/zig-datetime/blob/master/src/datetime.zig#L1394
+
 zig-time
     https://github.com/nektro/zig-time
+
+Format timestamp into ISO 8601 strings
+    https://ziggit.dev/t/format-timestamp-into-iso-8601-strings/3824
+
+Timezone-aware datetime - zdt
+    https://ziggit.dev/t/timezone-aware-datetime-zdt/2618
+    https://github.com/FObersteiner/zdt
 
 Zig network lib
    https://github.com/ikskuh/zig-network
