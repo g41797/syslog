@@ -1,7 +1,7 @@
 //---------------------------------
 const std   	= @import("std");
 const mem   	= std.mem;
-const testing       = std.testing;
+const testing   = std.testing;
 //---------------------------------
 
 pub fn ShortString(comptime length: u8) type {

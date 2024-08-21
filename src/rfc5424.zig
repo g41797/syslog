@@ -4,6 +4,7 @@ const mem           = std.mem;
 const testing       = std.testing;
 const string        = @import("shortstring.zig");
 const pid        	= @import("pid.zig");
+const timestamp     = @import("timestamp.zig");
 const ShortString   = string.ShortString;
 const builtin       = @import("builtin");
 const native_os     = builtin.os.tag;

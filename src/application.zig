@@ -8,6 +8,7 @@ const ShortString   = string.ShortString;
 const builtin       = @import("builtin");
 const native_os     = builtin.os.tag;
 const rfc5424   	= @import("rfc5424.zig");
+const timestamp     = @import("timestamp.zig");
 //---------------------------------
 
 // HOSTNAME        = NILVALUE / 1*255PRINTUSASCII
