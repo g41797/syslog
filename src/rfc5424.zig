@@ -5,11 +5,18 @@ const testing       = std.testing;
 const string        = @import("shortstring.zig");
 const pid        	= @import("pid.zig");
 const timestamp     = @import("timestamp.zig");
+const application   = @import("application.zig");
 const ShortString   = string.ShortString;
 const builtin       = @import("builtin");
 const native_os     = builtin.os.tag;
+const Allocator     = std.mem.Allocator;
+const print         = @import("std").debug.print;
 //---------------------------------
 
+//--------------------------------------------------------------------------------------
+// Current implementation supports subset of RFC5424:
+//  - MSGID, STRUCTURED-DATA = NILVALUE
+//  - MSG = *%d00-255 ; not starting with BOM
 //--------------------------------------------------------------------------------------
 // SYSLOG-MSG      = HEADER SP STRUCTURED-DATA [SP MSG]
 //
@@ -21,7 +28,7 @@ const native_os     = builtin.os.tag;
 //
 // APP-NAME        = NILVALUE / 1*48PRINTUSASCII
 // PROCID          = NILVALUE / 1*128PRINTUSASCII
-// MSGID           = NILVALUE / 1*32PRINTUSASCII
+// MSGID           = NILVALUE
 //
 // TIMESTAMP       = NILVALUE / FULL-DATE "T" FULL-TIME
 // FULL-DATE       = DATE-FULLYEAR "-" DATE-MONTH "-" DATE-MDAY
@@ -40,21 +47,9 @@ const native_os     = builtin.os.tag;
 // TIME-NUMOFFSET  = ("+" / "-") TIME-HOUR ":" TIME-MINUTE
 //
 //
-// STRUCTURED-DATA = NILVALUE / 1*SD-ELEMENT
-// SD-ELEMENT      = "[" SD-ID *(SP SD-PARAM) "]"
-// SD-PARAM        = PARAM-NAME "=" %d34 PARAM-VALUE %d34
-// SD-ID           = SD-NAME
-// PARAM-NAME      = SD-NAME
-// PARAM-VALUE     = UTF-8-STRING ; characters '"', '\' and ; ']' MUST be escaped.
-// SD-NAME         = 1*32PRINTUSASCII ; except '=', SP, ']', %d34 (")
+// STRUCTURED-DATA = NILVALUE
 //
-// MSG             = MSG-ANY / MSG-UTF8
-// MSG-ANY         = *OCTET ; not starting with BOM
-// MSG-UTF8        = BOM UTF-8-STRING
-// BOM             = %xEF.BB.BF
-// UTF-8-STRING    = *OCTET ; UTF-8 string as specified
-// ; in RFC 3629
-//
+// MSG             = *OCTET ; not starting with BOM
 // OCTET           = %d00-255
 // SP              = %d32
 // PRINTUSASCII    = %d33-126
@@ -64,8 +59,9 @@ const native_os     = builtin.os.tag;
 //--------------------------------------------------------------------------------------
 
 
-pub const MAX_MSGID: u8     = 32;
-pub const MAX_TIMESTAMP: u8 = 48;
+pub const NILVALUE: [] const u8 = " - ";
+
+pub const SP: [] const u8       = " ";
 
 pub const Severity = enum(u3) {
     emerg   = 0,
@@ -104,3 +100,50 @@ pub const Facility = enum(u8) {
 
 pub inline fn priority(fcl: Facility, svr: Severity) u8 { return fcl + svr; }
 
+pub const MIN_BUFFER_LEN : u16 = 2048;
+
+pub const Formatter = struct {
+
+    const Self = @This();
+
+    appl: application.Application           = undefined,
+    buffer: []u8                            = undefined,
+    stream: std.io.FixedBufferStream([]u8)  = undefined,
+
+    pub fn init(frmtr: *Formatter, fcl: Facility, app_name: []const u8, buffer: []u8) !void {
+
+        if (buffer.len < MIN_BUFFER_LEN) {return error.NoSpaceLeft;}
+
+        _               = try frmtr.appl.init(app_name, fcl);
+        frmtr.buffer    = buffer;
+        frmtr.stream    = std.io.fixedBufferStream(frmtr.buffer);
+
+        return;
+    }
+
+    pub fn build(frmtr: *Formatter, _: Severity, _: []const u8) ![]const u8 {
+
+        frmtr.*.stream.reset();
+
+        return frmtr.*.stream.getWritten();
+    }
+
+    pub fn format(frmtr: *Formatter, _: Severity, _: []const u8, comptime _: []const u8, _: anytype) ![]const u8 {
+        frmtr.*.stream.reset();
+
+        return frmtr.*.stream.getWritten();
+    }
+
+};
+
+test "formatter test" {
+    var buffer: [2048]u8 = undefined;
+
+    var fmtr: Formatter = undefined;
+
+    _           = try fmtr.init(Facility.local0, "process", &buffer);
+
+    const out   = try fmtr.build(Severity.alert, "nothing");
+
+    _ = try testing.expectEqual(0,  out.len);
+}

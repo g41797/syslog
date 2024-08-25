@@ -1,3 +1,9 @@
+Wiki - Syslog
+    https://en.wikipedia.org/wiki/Syslog
+
+Is Syslog Useful?
+    https://www.dnsstuff.com/is-syslog-useful
+
 RFC 5424
     https://tools.ietf.org/html/rfc5424
 
@@ -16,6 +22,15 @@ RFC 5424
        receives a message with a length larger than it supports, the
        transport receiver SHOULD truncate the payload.  Alternatively, it
        MAY discard the message.
+
+
+Transmission of Syslog Messages over UDP
+    https://www.rfc-editor.org/rfc/rfc5426.txt
+    "...When network MTU is not known in advance, the safest assumption is
+    to restrict messages to 480 octets for IPv4 and 1180 octets for IPv6...."
+
+UDP (om_udp) NXLog
+    https://docs.nxlog.co/refman/current/om/udp.html
 
 UDP
     https://en.wikipedia.org/wiki/User_Datagram_Protocol
@@ -208,6 +223,8 @@ Syslog client
         https://cs.opensource.google/go/go/+/refs/tags/go1.22.6:src/log/syslog/
         https://pkg.go.dev/log/syslog
 
+        search: https://pkg.go.dev/search?q=syslog
+
 State of datetime handling in Zig?
     https://ziggit.dev/t/state-of-datetime-handling-in-zig/2149
 
@@ -276,4 +293,11 @@ How to test several zig files etc
 Allocators explained
     https://dayvster.com/blog/zig-allocators-explained/
 
+zig-msgpack
+    https://github.com/zigcc/zig-msgpack
 
+Neovim client
+    https://github.com/jinzhongjia/znvim
+
+Telnet client
+    https://github.com/michidk/telnet-zig/
