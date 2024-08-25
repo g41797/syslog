@@ -23,22 +23,39 @@ pub fn ShortString(comptime length: u8) type {
             self.*.len = src.len;
 
             if(src.len > 0) {
-                @memset(&self.*.items, 0);
+                @memset(&self.*.items, ' ');
                 std.mem.copyForwards(u8, &self.*.items, src);
             }
 
             self.*.string = self.*.items[0..src.len];
-            return src.len;
+            self.*.trimRight();
+            return self.*.string.?.len;
         }
 
         pub fn bufPrint(self: *Self, comptime fmt: []const u8, args: anytype) !void {
             self.*.string = try std.fmt.bufPrint(&self.*.items, fmt, args);
             self.*.len = self.*.string.?.len;
+            self.*.trimRight();
             return;
         }
 
-        pub fn content(self: *Self) ?[]u8 {
+        pub fn content(self: *Self) ?[]const u8 {
+            if (self.*.string == null) {return null;}
+
+            if (self.*.string.?.len == 0) {return self.*.string;}
+
+            self.*.trimRight();
+
             return self.*.string;
+        }
+
+        pub fn trimRight(self: *Self) void {
+            if (self.*.string == null) {return;}
+            if (self.*.string.?.len == 0) {return;}
+
+            const trimed  = std.mem.trimRight(u8, self.*.string.?, " \n\r\t");
+            self.*.string = self.*.items[0..trimed.len];
+            return;
         }
 
     };
