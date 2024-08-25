@@ -1,13 +1,8 @@
 //---------------------------------
 const std           = @import("std");
-const mem           = std.mem;
 const testing       = std.testing;
 const string        = @import("shortstring.zig");
-const pid        	= @import("pid.zig");
 const ShortString   = string.ShortString;
-const builtin       = @import("builtin");
-const native_os     = builtin.os.tag;
-const rfc5424   	= @import("rfc5424.zig");
 pub const datetime      = @import("./zig-datetime/src/datetime.zig");
 pub const timezones     = @import("./zig-datetime/src/timezones.zig");
 //---------------------------------
@@ -16,7 +11,7 @@ pub const timezones     = @import("./zig-datetime/src/timezones.zig");
 pub const MAX_TIMESTAMP: u8 = 48;
 pub const MiN_TIMESTAMP: u8 = 20;
 
-const TimeStamp   = ShortString(MAX_TIMESTAMP);
+pub const TimeStamp   = ShortString(MAX_TIMESTAMP);
 
 pub fn setNow(tstmp: *TimeStamp) !void {
 

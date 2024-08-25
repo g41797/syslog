@@ -301,3 +301,6 @@ Neovim client
 
 Telnet client
     https://github.com/michidk/telnet-zig/
+
+Reader&Writer patterns
+    https://zighelp.org/chapter-2/#readers-and-writers

@@ -1,16 +1,11 @@
 //---------------------------------
 const std           = @import("std");
-const mem           = std.mem;
 const testing       = std.testing;
 const string        = @import("shortstring.zig");
 const pid        	= @import("pid.zig");
 const timestamp     = @import("timestamp.zig");
 const application   = @import("application.zig");
 const ShortString   = string.ShortString;
-const builtin       = @import("builtin");
-const native_os     = builtin.os.tag;
-const Allocator     = std.mem.Allocator;
-const print         = @import("std").debug.print;
 //---------------------------------
 
 //--------------------------------------------------------------------------------------
@@ -98,7 +93,7 @@ pub const Facility = enum(u8) {
     local7      = (23<<3)
 };
 
-pub inline fn priority(fcl: Facility, svr: Severity) u8 { return fcl + svr; }
+pub inline fn priority(fcl: Facility, svr: Severity) u8 { return @intFromEnum(fcl) +  @intFromEnum(svr); }
 
 pub const MIN_BUFFER_LEN : u16 = 2048;
 
@@ -107,8 +102,9 @@ pub const Formatter = struct {
     const Self = @This();
 
     appl: application.Application           = undefined,
+    timestamp: timestamp.TimeStamp          = undefined,
     buffer: []u8                            = undefined,
-    stream: std.io.FixedBufferStream([]u8)  = undefined,
+    fbs: std.io.FixedBufferStream([]u8)     = undefined,
 
     pub fn init(frmtr: *Formatter, fcl: Facility, app_name: []const u8, buffer: []u8) !void {
 
@@ -116,22 +112,38 @@ pub const Formatter = struct {
 
         _               = try frmtr.appl.init(app_name, fcl);
         frmtr.buffer    = buffer;
-        frmtr.stream    = std.io.fixedBufferStream(frmtr.buffer);
+        frmtr.fbs       = std.io.fixedBufferStream(frmtr.buffer);
 
         return;
     }
 
-    pub fn build(frmtr: *Formatter, _: Severity, _: []const u8) ![]const u8 {
-
-        frmtr.*.stream.reset();
-
-        return frmtr.*.stream.getWritten();
+    pub inline fn build(frmtr: *Formatter, svr: Severity, msg: []const u8) ![]const u8 {
+        return frmtr.*.format(svr, "{s}",  .{msg});
     }
 
-    pub fn format(frmtr: *Formatter, _: Severity, _: []const u8, comptime _: []const u8, _: anytype) ![]const u8 {
-        frmtr.*.stream.reset();
+    pub fn format(frmtr: *Formatter, svr: Severity, comptime fmt: []const u8, msg: anytype) ![]const u8 {
 
-        return frmtr.*.stream.getWritten();
+        _ = try timestamp.setNow(&frmtr.*.timestamp);
+
+        frmtr.*.fbs.reset();
+
+        //---------------------------------------------------------------------------------------------
+        // EXTHEADER    = <PRV>1 SP TIMESTAMP SP HOSTNAME SP APP-NAME SP PROCID SP NILVALUE SP NILVALUE
+        // SYSLOG-MSG   = EXTHEADER [SP MSG]
+        //-----------------------------------------------------------------------------------
+        _ = try frmtr.*.fbs.writer().print(
+                "<{0d:0^3}>1 {1s} {2s} {3s} {4s} <->  <-> ",
+                .{
+                    priority(frmtr.*.appl.fcl, svr),
+                    frmtr.*.timestamp.content().?,
+                    frmtr.*.appl.host_name.content().?,
+                    frmtr.*.appl.app_name.content().?,
+                    frmtr.*.appl.procid.content().?,
+                });
+
+        _ = try frmtr.*.fbs.writer().print(fmt, msg);
+
+        return frmtr.*.fbs.getWritten();
     }
 
 };
@@ -143,7 +155,7 @@ test "formatter test" {
 
     _           = try fmtr.init(Facility.local0, "process", &buffer);
 
-    const out   = try fmtr.build(Severity.alert, "nothing");
+    const out   = try fmtr.build(Severity.alert, "!!!SOS!!!");
 
-    _ = try testing.expectEqual(0,  out.len);
+    _ = try testing.expectEqual(true,  out.len > 0);
 }
