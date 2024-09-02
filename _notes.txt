@@ -243,7 +243,11 @@ Timezone-aware datetime - zdt
     https://github.com/FObersteiner/zdt
 
 Zig network lib
-   https://github.com/ikskuh/zig-network
+           https://github.com/ikskuh/zig-network
+    build.zig.zon
+        https://git.musuka.dev/paoda/zba-gdbstub/src/commit/e5c1d4d2b7ff4c2f1876ca40bd79ba2c06b38a5d/build.zig.zon
+    build.zig
+        https://git.musuka.dev/paoda/zba-gdbstub/src/commit/e5c1d4d2b7ff4c2f1876ca40bd79ba2c06b38a5d/build.zig
 
 Zig log
     https://github.com/ziglang/zig/blob/master/lib/std/log.zig#L7
@@ -284,6 +288,15 @@ Get a tarball of any repo directly
 
     e.g. wget -O /tmp/sputniik.tar.gz   https://github.com/g41797/sputnik/archive/master.tar.gz
 
+    zig fetch --save https://github.com/frmdstryr/zig-datetime/archive/master.tar.gz
+    .....
+        zig build test -freference-trace --summary all
+
+    IDE:
+    /usr/bin/zig test --color on /home/g41797/CLionProjects/github.com/g41797/ziglog/src/root.zig -O Debug
+
+    /usr/bin/zig build test --color on $PWD/src/root.zig -O Debug -freference-trace --summary all
+
 Interface
     https://github.com/mitchellh/libxev/blob/main/src/main.zig
 
@@ -304,3 +317,43 @@ Telnet client
 
 Reader&Writer patterns
     https://zighelp.org/chapter-2/#readers-and-writers
+
+A tagged union interface
+    https://codeberg.org/dude_the_builder/zig_in_depth/src/branch/main/35_interface/src/to_string_tagged.zig
+
+Practices
+    https://www.reddit.com/r/Zig/comments/sanpzf/zig_best_practices_emerging_patterns/
+
+Examples of "linking"
+    https://github.com/karlseguin/pg.zig/blob/master/build.zig
+    https://github.com/karlseguin/pg.zig/blob/master/build.zig.zon
+    https://github.com/karlseguin/log.zig
+
+Simple Scalable Unbounded Queue
+    https://zig.news/kprotty/simple-scalable-unbounded-queue-34c2
+
+WTF is Build.Zig.Zon and Build.Zig
+    https://zig.news/edyu/zig-package-manager-wtf-is-zon-2-0110-update-1jo3
+    https://github.com/edyu/wtf-zig-zon-2
+    https://github.com/beachglasslabs/zig-duckdb
+
+
+Zig-DNS
+    https://github.com/dantecatalfamo/zig-dns
+
+Example of sub-modules
+    https://github.com/dantecatalfamo/zig-dns/blob/master/.gitmodules
+
+Use git submodule
+    https://zig.news/fuzhouch/use-git-submodule-local-path-to-manage-dependencies-24ig
+
+Mastering project management in Zig
+    https://blog.orhun.dev/zig-bits-03/
+
+@import() and Packages
+    https://zig.news/mattnite/import-and-packages-23mb?comments_sort=oldest#toggle-comments-sort-dropdown
+
+Import
+    https://github.com/rofrol/zig-postgres-template
+    https://github.com/rofrol/zig-postgres
+

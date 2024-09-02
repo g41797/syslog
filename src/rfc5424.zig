@@ -12,6 +12,8 @@ const ShortString   = string.ShortString;
 // Current implementation supports subset of RFC5424:
 //  - MSGID, STRUCTURED-DATA = NILVALUE
 //  - MSG = *%d00-255 ; not starting with BOM
+//  - HOSTNAME = NILVALUE for non-windows-linux
+//  - PID = NILVALUE for non-windows-linux
 //--------------------------------------------------------------------------------------
 // SYSLOG-MSG      = HEADER SP STRUCTURED-DATA [SP MSG]
 //

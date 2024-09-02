@@ -19,14 +19,14 @@ pub extern "kernel32" fn GetCurrentProcessId() callconv(WINAPI) DWORD;
 pub const PID = switch (native_os) {
     .windows    => windows.DWORD,   //u32
     .linux      => posix.pid_t,     //i32
-    else        => unreachable,     //
+    else        => u8,
 };
 
 pub fn getPID() PID {
     switch (native_os) {
         .windows    => return GetCurrentProcessId(),
         .linux      => return linux.getpid(),
-        else        => unreachable
+        else        => return 0,
     }
 }
 
@@ -44,7 +44,9 @@ pub fn storePID(prcid: *ProcID) !void {
         .linux, .windows        => {
                             return prcid.bufPrint("{d}", .{currPID});
                        },
-        else                    => unreachable
+        else                    =>     {
+                            return prcid.bufPrint("-", .{});
+                        },
     }
 }
 

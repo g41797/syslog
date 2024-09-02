@@ -3,11 +3,11 @@ const std           = @import("std");
 const testing       = std.testing;
 const string        = @import("shortstring.zig");
 const ShortString   = string.ShortString;
-pub const datetime      = @import("./zig-datetime/src/datetime.zig");
-pub const timezones     = @import("./zig-datetime/src/timezones.zig");
+pub const datetime  = @import("./zig-datetime/src/datetime.zig");
+pub const timezones = @import("./zig-datetime/src/timezones.zig");
 //---------------------------------
 
-// TIMESTAMP       = NILVALUE / FULL-DATE "T" FULL-TIME
+// TIMESTAMP        = NILVALUE / FULL-DATE "T" FULL-TIME
 pub const MAX_TIMESTAMP: u8 = 48;
 pub const MiN_TIMESTAMP: u8 = 20;
 

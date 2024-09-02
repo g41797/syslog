@@ -45,6 +45,11 @@ pub const Application = struct {
 
     fn setHostName(appl: *Application) !void {
 
+        if(!((native_os == .windows) or (native_os == .linux))) {
+            appl.*.host_name.fillFrom("-");
+            return;
+        }
+
         const envMame =     switch (native_os) {
             .windows    => "COMPUTERNAME",
             .linux      => "HOSTNAME",
