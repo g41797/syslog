@@ -20,6 +20,11 @@ pub const MAX_APP_NAME: u8  = 48;
 const AppName   = ShortString(MAX_APP_NAME);
 const HostName  = ShortString(MAX_HOST_NAME);
 
+pub const ApplicationOpts = struct {
+    name:   []const u8      = "zigprocess",
+    fcl: rfc5424.Facility   = .local7,
+};
+
 pub const Application = struct {
 
     const Self = @This();
@@ -30,15 +35,15 @@ pub const Application = struct {
     fcl:        rfc5424.Facility    = undefined,
 
 
-    pub fn init(app: *Application, name: []const u8, fcl: rfc5424.Facility) !void {
+    pub fn init(app: *Application, opts: ApplicationOpts) !void {
 
-        _ = try app.*.app_name.fillFrom(name);
+        _ = try app.*.app_name.fillFrom(opts.name);
 
         _ = try pid.storePID(&app.*.procid);
 
         _ = try app.setHostName();
 
-        app.*.fcl = fcl;
+        app.*.fcl = opts.fcl;
 
         return;
     }
@@ -60,7 +65,7 @@ pub const Application = struct {
 
         var   fbAllocator   = std.heap.FixedBufferAllocator.init(&buffer);
         const allocator     = fbAllocator.allocator();
-        const hostName      = try std.process.getEnvVarOwned(allocator, envMame);
+        const hostName      = std.process.getEnvVarOwned(allocator, envMame) catch "-";
 
         defer allocator.free(hostName);
 
@@ -75,5 +80,5 @@ pub const Application = struct {
 test "application init" {
     var logger: Application = undefined;
 
-    _ = try logger.init("logger", rfc5424.Facility.local0);
+    _ = try logger.init(.{});
 }

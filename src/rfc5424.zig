@@ -108,11 +108,11 @@ pub const Formatter = struct {
     buffer: []u8                            = undefined,
     fbs: std.io.FixedBufferStream([]u8)     = undefined,
 
-    pub fn init(frmtr: *Formatter, fcl: Facility, app_name: []const u8, buffer: []u8) !void {
+    pub fn init(frmtr: *Formatter, opts: application.ApplicationOpts, buffer: []u8) !void {
 
         if (buffer.len < MIN_BUFFER_LEN) {return error.NoSpaceLeft;}
 
-        _               = try frmtr.appl.init(app_name, fcl);
+        _               = try frmtr.appl.init(opts);
         frmtr.buffer    = buffer;
         frmtr.fbs       = std.io.fixedBufferStream(frmtr.buffer);
 
@@ -155,7 +155,7 @@ test "formatter test" {
 
     var fmtr: Formatter = undefined;
 
-    _           = try fmtr.init(Facility.local0, "process", &buffer);
+    _           = try fmtr.init(.{}, &buffer);
 
     const out   = try fmtr.build(Severity.alert, "!!!SOS!!!");
 
