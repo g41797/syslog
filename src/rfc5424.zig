@@ -6,6 +6,7 @@ const pid        	= @import("pid.zig");
 const timestamp     = @import("timestamp.zig");
 const application   = @import("application.zig");
 const ShortString   = string.ShortString;
+const Allocator     = std.mem.Allocator;
 //---------------------------------
 
 //--------------------------------------------------------------------------------------
@@ -97,35 +98,59 @@ pub const Facility = enum(u8) {
 
 pub inline fn priority(fcl: Facility, svr: Severity) u8 { return @intFromEnum(fcl) +  @intFromEnum(svr); }
 
-pub const MIN_BUFFER_LEN : u16 = 2048;
+pub const MIN_BUFFER_LEN : u16 = 512;
+pub const MAX_BUFFER_LEN : u16 = MIN_BUFFER_LEN*64;
 
 pub const Formatter = struct {
 
     const Self = @This();
 
+    allocator: Allocator                    = undefined,
     appl: application.Application           = undefined,
     timestamp: timestamp.TimeStamp          = undefined,
-    buffer: []u8                            = undefined,
+    buffer: ?[]u8                           = undefined,
+    len: usize                              = undefined,
     fbs: std.io.FixedBufferStream([]u8)     = undefined,
 
-    pub fn init(frmtr: *Formatter, opts: application.ApplicationOpts, buffer: []u8) !void {
+    pub fn init(frmtr: *Formatter, allocator: Allocator, opts: application.ApplicationOpts) !void {
 
-        if (buffer.len < MIN_BUFFER_LEN) {return error.NoSpaceLeft;}
+        frmtr.len       = MIN_BUFFER_LEN;
+        frmtr.buffer    = null;
+        frmtr.allocator = allocator;
 
+        _               = try frmtr.alloc();
         _               = try frmtr.appl.init(opts);
-        frmtr.buffer    = buffer;
-        frmtr.fbs       = std.io.fixedBufferStream(frmtr.buffer);
 
         return;
     }
 
-    pub inline fn build(frmtr: *Formatter, svr: Severity, msg: []const u8) ![]const u8 {
+    pub fn deinit(frmtr: *Formatter) void {
+        frmtr.free();
+        return;
+    }
+
+    pub inline fn build(frmtr: *Formatter, svr: Severity, msg: []const u8) !usize {
         return frmtr.*.format(svr, "{s}",  .{msg});
     }
 
-    pub fn format(frmtr: *Formatter, svr: Severity, comptime fmt: []const u8, msg: anytype) ![]const u8 {
+    pub fn format(frmtr: *Formatter, svr: Severity, comptime fmt: []const u8, msg: anytype) !usize {
 
         _ = try timestamp.setNow(&frmtr.*.timestamp);
+
+        while(true) {
+            if(frmtr.print(svr, fmt, msg)) |_| {
+                break;
+            }
+            else |_| {
+                _ = try frmtr.alloc();
+                continue;
+            }
+        }
+
+        return frmtr.*.fbs.getWritten().len;
+    }
+
+    fn print(frmtr: *Formatter, svr: Severity, comptime fmt: []const u8, msg: anytype) !void {
 
         frmtr.*.fbs.reset();
 
@@ -134,30 +159,64 @@ pub const Formatter = struct {
         // SYSLOG-MSG   = EXTHEADER [SP MSG]
         //-----------------------------------------------------------------------------------
         _ = try frmtr.*.fbs.writer().print(
-                "<{0d:0^3}>1 {1s} {2s} {3s} {4s} <->  <-> ",
-                .{
-                    priority(frmtr.*.appl.fcl, svr),
-                    frmtr.*.timestamp.content().?,
-                    frmtr.*.appl.host_name.content().?,
-                    frmtr.*.appl.app_name.content().?,
-                    frmtr.*.appl.procid.content().?,
-                });
+            "<{0d:0^3}>1 {1s} {2s} {3s} {4s} <->  <-> ",
+            .{
+                priority(frmtr.*.appl.fcl, svr),
+                frmtr.*.timestamp.content().?,
+                frmtr.*.appl.host_name.content().?,
+                frmtr.*.appl.app_name.content().?,
+                frmtr.*.appl.procid.content().?,
+            });
 
         _ = try frmtr.*.fbs.writer().print(fmt, msg);
 
-        return frmtr.*.fbs.getWritten();
+        return;
     }
 
+    fn alloc(frmtr: *Formatter) !void {
+
+        if (frmtr.len >= MAX_BUFFER_LEN) {return error.NoSpaceLeft;}
+
+        if (frmtr.buffer == null) {
+            frmtr.buffer = try frmtr.allocator.alloc(u8, frmtr.len);
+            frmtr.fbs    = std.io.fixedBufferStream(frmtr.buffer.?);
+            return;
+        }
+
+        frmtr.free();
+
+        frmtr.len *= 2;
+
+        return frmtr.alloc();
+    }
+
+    fn free(frmtr: *Formatter) void {
+        if (frmtr.buffer != null) {
+            frmtr.allocator.free(frmtr.buffer.?);
+            frmtr.buffer = null;
+        }
+        return;
+    }
 };
 
 test "formatter test" {
-    var buffer: [2048]u8 = undefined;
+    const small  = "!!!SOS!!!";
+    const big    = "*" ** (MIN_BUFFER_LEN*16);
+    const huge   = "*" ** MAX_BUFFER_LEN;
 
     var fmtr: Formatter = undefined;
 
-    _           = try fmtr.init(.{}, &buffer);
+    _ = try fmtr.init(std.testing.allocator,.{});
+    defer fmtr.deinit();
 
-    const out   = try fmtr.build(Severity.alert, "!!!SOS!!!");
+    var len = try fmtr.build(.crit, small);
+    try testing.expect(len > small.len);
 
-    _ = try testing.expectEqual(true,  out.len > 0);
+    len     = try fmtr.build(.info, big);
+    try testing.expect(len > big.len);
+
+    try testing.expectError(
+        error.NoSpaceLeft,
+        fmtr.build(.notice, huge)
+    );
 }

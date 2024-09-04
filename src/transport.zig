@@ -8,6 +8,7 @@ pub const network	= @import("./zig-network/network.zig");
 pub const Protocol	= network.Protocol;
 const Mutex     	= std.Thread.Mutex;
 const Socket        = network.Socket;
+const Allocator     = std.mem.Allocator;
 //---------------------------------
 
 const TransportError = error {
@@ -16,16 +17,11 @@ const TransportError = error {
 };
 
 pub const TransportOpts = struct {
-    allocator:  std.mem.Allocator   = null,
-
     proto:      Protocol            = .udp,
-
     // either ip or host
     addr: []const u8                = "127.0.0.1",
-
     port: u16                       = 514,
 };
-
 
 pub const Sender = struct {
 
@@ -35,7 +31,7 @@ pub const Sender = struct {
     connected: bool                 = false,
     socket:Socket                   = undefined,
 
-    pub fn connect(sndr: *Sender, opts: TransportOpts) !void {
+    pub fn connect(sndr: *Sender, allocator:  Allocator, opts: TransportOpts) !void {
         sndr.mutex.lock();
         defer sndr.mutex.unlock();
 
@@ -44,7 +40,7 @@ pub const Sender = struct {
         try network.init();
         errdefer network.deinit();
 
-        sndr.socket     = try network.connectToHost(opts.allocator, opts.addr, opts.port, opts.proto);
+        sndr.socket     = try network.connectToHost(allocator, opts.addr, opts.port, opts.proto);
         sndr.connected  = true;
 
         return;
