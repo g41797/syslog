@@ -24,7 +24,7 @@ pub const Syslog = struct {
     frmtr: Formatter    = undefined,
     sndr:  Sender       = undefined,
     ready: bool         = false,
-    filter:Severity     = .debug,
+    filter: Severity    = .debug,
 
     pub fn init(appConf: ApplicationOpts, transpConf: TransportOpts) !Syslog {
         var gpa         = std.heap.GeneralPurposeAllocator(.{}){};
@@ -80,7 +80,7 @@ pub const Syslog = struct {
         return;
     }
 
-    pub fn filter(slog: *Syslog, svr: Severity) void {
+    pub fn setfilter(slog: *Syslog, svr: Severity) void {
         slog.mutex.lock();
         defer slog.mutex.unlock();
 
