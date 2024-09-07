@@ -28,5 +28,5 @@ jobs:
           cache: false
 
 #      - run: zig test src/root.zig
-      - run: zig build test -freference-trace --summary all
+      - run: zig build test - freference-trace --summary all
 
