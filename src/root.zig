@@ -8,6 +8,7 @@ pub const pid           = @import("pid.zig");
 pub const application   = @import("application.zig");
 pub const timestamp     = @import("timestamp.zig");
 pub const transport     = @import("transport.zig");
+pub const syslog        = @import("syslog.zig");
 //---------------------------------
 
 test {

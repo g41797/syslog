@@ -25,25 +25,19 @@ pub const TransportOpts = struct {
 
 pub const Sender = struct {
 
-    const Self = @This();
-
     mutex:  Mutex                   = .{},
     connected: bool                 = false,
     socket:Socket                   = undefined,
 
-    pub fn connect(sndr: *Sender, allocator:  Allocator, opts: TransportOpts) !void {
-        sndr.mutex.lock();
-        defer sndr.mutex.unlock();
-
-        if(sndr.connected) {return TransportError.AlreadyConnected;}
+    pub fn connect(allocator:  Allocator, opts: TransportOpts) !Sender {
 
         try network.init();
         errdefer network.deinit();
 
-        sndr.socket     = try network.connectToHost(allocator, opts.addr, opts.port, opts.proto);
-        sndr.connected  = true;
-
-        return;
+        return .{
+            .socket     = try network.connectToHost(allocator, opts.addr, opts.port, opts.proto),
+            .connected  = true,
+        };
     }
 
     pub fn disconnect(sndr: *Sender) !void {

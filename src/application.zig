@@ -35,17 +35,32 @@ pub const Application = struct {
     fcl:        rfc5424.Facility    = undefined,
 
 
-    pub fn init(app: *Application, opts: ApplicationOpts) !void {
+    // pub fn init(app: *Application, opts: ApplicationOpts) !void {
+    //
+    //     _ = try app.*.app_name.fillFrom(opts.name);
+    //
+    //     _ = try pid.storePID(&app.*.procid);
+    //
+    //     _ = try app.setHostName();
+    //
+    //     app.*.fcl = opts.fcl;
+    //
+    //     return;
+    // }
 
-        _ = try app.*.app_name.fillFrom(opts.name);
+    pub fn init(opts: ApplicationOpts) !Application {
 
-        _ = try pid.storePID(&app.*.procid);
+        var app: Application = undefined;
+
+        _ = try app.app_name.fillFrom(opts.name);
+
+        _ = try pid.storePID(&app.procid);
 
         _ = try app.setHostName();
 
-        app.*.fcl = opts.fcl;
+        app.fcl = opts.fcl;
 
-        return;
+        return app;
     }
 
     fn setHostName(appl: *Application) !void {
@@ -78,7 +93,5 @@ pub const Application = struct {
 
 
 test "application init" {
-    var logger: Application = undefined;
-
-    _ = try logger.init(.{});
+    _ = try Application.init(.{});
 }
