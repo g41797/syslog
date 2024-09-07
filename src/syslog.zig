@@ -24,6 +24,7 @@ pub const Syslog = struct {
     frmtr: Formatter    = undefined,
     sndr:  Sender       = undefined,
     ready: bool         = false,
+    filter:Severity     = .debug,
 
     pub fn init(appConf: ApplicationOpts, transpConf: TransportOpts) !Syslog {
         var gpa         = std.heap.GeneralPurposeAllocator(.{}){};
@@ -55,6 +56,8 @@ pub const Syslog = struct {
 
         if(!slog.ready) {return error.NotReady;}
 
+        if(svr > slog.filter) {return;}
+
         _ = try slog.*.sndr.send(try slog.*.frmtr.build(svr, msg));
 
         errdefer slog.ready = false;
@@ -68,6 +71,8 @@ pub const Syslog = struct {
 
         if(!slog.ready) {return error.NotReady;}
 
+        if(svr > slog.filter) {return;}
+
         _ = try slog.*.sndr.send(try slog.*.frmtr.format(svr, fmt, msg));
 
         errdefer slog.ready = false;
@@ -75,4 +80,12 @@ pub const Syslog = struct {
         return;
     }
 
+    pub fn filter(slog: *Syslog, svr: Severity) void {
+        slog.mutex.lock();
+        defer slog.mutex.unlock();
+
+        slog.filter = svr;
+
+        return;
+    }
 };
