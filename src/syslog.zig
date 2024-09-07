@@ -56,7 +56,7 @@ pub const Syslog = struct {
 
         if(!slog.ready) {return error.NotReady;}
 
-        if(svr > slog.filter) {return;}
+        if(@intFromEnum(svr) > @intFromEnum(slog.filter)) {return;}
 
         _ = try slog.*.sndr.send(try slog.*.frmtr.build(svr, msg));
 
@@ -71,7 +71,7 @@ pub const Syslog = struct {
 
         if(!slog.ready) {return error.NotReady;}
 
-        if(svr > slog.filter) {return;}
+        if(@intFromEnum(svr) > @intFromEnum(slog.filter)) {return;}
 
         _ = try slog.*.sndr.send(try slog.*.frmtr.format(svr, fmt, msg));
 
