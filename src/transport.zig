@@ -1,42 +1,40 @@
 //---------------------------------
-const std           = @import("std");
-const testing       = std.testing;
-pub const network	= @import("./zig-network/network.zig");
+const std = @import("std");
+const testing = std.testing;
+pub const network = @import("./zig-network/network.zig");
 //---------------------------------
 
 //---------------------------------
-pub const Protocol	= network.Protocol;
-const Mutex     	= std.Thread.Mutex;
-const Socket        = network.Socket;
-const Allocator     = std.mem.Allocator;
+pub const Protocol = network.Protocol;
+const Mutex = std.Thread.Mutex;
+const Socket = network.Socket;
+const Allocator = std.mem.Allocator;
 //---------------------------------
 
-const TransportError = error {
+const TransportError = error{
     NotConnectedYet,
     AlreadyConnected,
 };
 
 pub const TransportOpts = struct {
-    proto:      Protocol            = .udp,
+    proto: Protocol = .udp,
     // either ip or host
-    addr: []const u8                = "127.0.0.1",
-    port: u16                       = 514,
+    addr: []const u8 = "127.0.0.1",
+    port: u16 = 514,
 };
 
 pub const Sender = struct {
+    mutex: Mutex = .{},
+    connected: bool = false,
+    socket: Socket = undefined,
 
-    mutex:  Mutex                   = .{},
-    connected: bool                 = false,
-    socket:Socket                   = undefined,
-
-    pub fn connect(allocator:  Allocator, opts: TransportOpts) !Sender {
-
+    pub fn connect(allocator: Allocator, opts: TransportOpts) !Sender {
         try network.init();
         errdefer network.deinit();
 
         return .{
-            .socket     = try network.connectToHost(allocator, opts.addr, opts.port, opts.proto),
-            .connected  = true,
+            .socket = try network.connectToHost(allocator, opts.addr, opts.port, opts.proto),
+            .connected = true,
         };
     }
 
@@ -44,7 +42,9 @@ pub const Sender = struct {
         sndr.mutex.lock();
         defer sndr.mutex.unlock();
 
-        if(!sndr.connected) {return;}
+        if (!sndr.connected) {
+            return;
+        }
 
         defer network.deinit();
 
@@ -58,13 +58,17 @@ pub const Sender = struct {
         sndr.mutex.lock();
         defer sndr.mutex.unlock();
 
-        if(!sndr.connected) {return TransportError.NotConnectedYet;}
+        if (!sndr.connected) {
+            return TransportError.NotConnectedYet;
+        }
 
-        if(data.len == 0) {return;}
+        if (data.len == 0) {
+            return;
+        }
 
-        var start: usize    = 0;
+        var start: usize = 0;
 
-        while(start < data.len) {
+        while (start < data.len) {
             const block = data[start..];
             const done = try sndr.sock.send(block);
             start += done;

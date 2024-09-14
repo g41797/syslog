@@ -1,4 +1,4 @@
-    const std = @import("std");
+const std = @import("std");
 const os = @import("os");
 const builtin = @import("builtin");
 
