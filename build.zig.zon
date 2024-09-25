@@ -51,9 +51,6 @@
         //    // actually used.
         //    .lazy = false,
         //},
-        .mailbox = . {
-            .path = "./deps/mailbox",
-        },
     },
 
     // Specifies the set of files and directories that are included in this package.
@@ -68,8 +65,5 @@
         "build.zig",
         "build.zig.zon",
         "src",
-        // For example...
-        //"LICENSE",
-        //"README.md",
     },
 }
