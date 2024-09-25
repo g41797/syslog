@@ -1,6 +1,14 @@
 Wiki - Syslog
     https://en.wikipedia.org/wiki/Syslog
 
+Image
+    https://commons.wikimedia.org/wiki/File:Syslog.png
+
+What is Syslog and How it Works
+    https://sematext.com/glossary/syslog/
+    https://www.paessler.com/it-explained/syslog
+    https://www.auvik.com/franklyit/blog/what-is-syslog/
+
 Is Syslog Useful?
     https://www.dnsstuff.com/is-syslog-useful
 

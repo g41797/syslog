@@ -6,7 +6,6 @@ pub const network = @import("./zig-network/network.zig");
 
 //---------------------------------
 pub const Protocol = network.Protocol;
-const Mutex = std.Thread.Mutex;
 const Socket = network.Socket;
 const Allocator = std.mem.Allocator;
 //---------------------------------
@@ -24,7 +23,6 @@ pub const TransportOpts = struct {
 };
 
 pub const Sender = struct {
-    mutex: Mutex = .{},
     connected: bool = false,
     socket: Socket = undefined,
 
@@ -39,8 +37,6 @@ pub const Sender = struct {
     }
 
     pub fn disconnect(sndr: *Sender) !void {
-        sndr.mutex.lock();
-        defer sndr.mutex.unlock();
 
         if (!sndr.connected) {
             return;
@@ -55,8 +51,6 @@ pub const Sender = struct {
     }
 
     pub fn send(sndr: *Sender, data: []const u8) !void {
-        sndr.mutex.lock();
-        defer sndr.mutex.unlock();
 
         if (!sndr.connected) {
             return TransportError.NotConnectedYet;
