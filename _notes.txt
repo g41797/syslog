@@ -356,7 +356,7 @@ Use git submodule
     https://zig.news/fuzhouch/use-git-submodule-local-path-to-manage-dependencies-24ig
 
     Once manually:
-        git submodule add https://github.com/g41797/mailbox deps/mailbox
+        git submodule add https://github.com/g41797/mailbox src/deps/mailbox
 
     git submodule update --init --recursive
 

@@ -1,0 +1,3 @@
+[submodule "src/deps/mailbox"]
+	path = src/deps/mailbox
+	url = https://github.com/g41797/mailbox
