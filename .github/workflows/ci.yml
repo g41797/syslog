@@ -27,6 +27,7 @@ jobs:
           version: master
           cache: false
 
-#      - run: zig test src/root.zig
+      - run: git submodule update --init --recursive
+
       - run: zig build test -freference-trace --summary all
 

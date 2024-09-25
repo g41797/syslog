@@ -354,6 +354,7 @@ Example of sub-modules
 
 Use git submodule
     https://zig.news/fuzhouch/use-git-submodule-local-path-to-manage-dependencies-24ig
+    git submodule update --init --recursive
 
 Mastering project management in Zig
     https://blog.orhun.dev/zig-bits-03/
