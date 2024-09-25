@@ -27,6 +27,8 @@ jobs:
           version: master
           cache: false
 
+      - run: git submodule add https://github.com/g41797/mailbox deps/mailbox
+
       - run: git submodule update --init --recursive
 
       - run: zig build test -freference-trace --summary all
