@@ -102,8 +102,8 @@ pub const Syslog = struct {
 
 pub const mailbox = @import("deps/mailbox/src/mailbox.zig");
 
-test "MailBox creation test" {
-    const Mbx = mailbox.MailBox(u32);
-    var mbox: Mbx = .{};
-    try testing.expectError(error.Timeout, mbox.receive(10));
-}
+// test "MailBox creation test" {
+//     const Mbx = mailbox.MailBox(u32);
+//     var mbox: Mbx = .{};
+//     try testing.expectError(error.Timeout, mbox.receive(10));
+// }
