@@ -36,8 +36,7 @@ pub const Sender = struct {
         };
     }
 
-    pub fn disconnect(sndr: *Sender) !void {
-
+    pub fn disconnect(sndr: *Sender) void {
         if (!sndr.connected) {
             return;
         }
@@ -51,7 +50,6 @@ pub const Sender = struct {
     }
 
     pub fn send(sndr: *Sender, data: []const u8) !void {
-
         if (!sndr.connected) {
             return TransportError.NotConnectedYet;
         }

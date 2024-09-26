@@ -1,6 +1,5 @@
 //---------------------------------
 const std = @import("std");
-const testing = std.testing;
 const Mutex = std.Thread.Mutex;
 const Allocator = std.mem.Allocator;
 
@@ -25,7 +24,14 @@ pub const Syslog = struct {
     ready: bool = false,
     filter: Severity = .debug,
 
-    pub fn init(appConf: ApplicationOpts, transpConf: TransportOpts) !Syslog {
+    pub fn init(slog: *Syslog, appConf: ApplicationOpts, transpConf: TransportOpts) !void {
+        slog.mutex.lock();
+        defer slog.mutex.unlock();
+
+        if (slog.ready) {
+            return error.WasInit;
+        }
+
         var gpa = std.heap.GeneralPurposeAllocator(.{}){};
         const allocator = gpa.allocator();
 
@@ -98,12 +104,3 @@ pub const Syslog = struct {
         return;
     }
 };
-
-
-pub const mailbox = @import("deps/mailbox/src/mailbox.zig");
-
-// test "MailBox creation test" {
-//     const Mbx = mailbox.MailBox(u32);
-//     var mbox: Mbx = .{};
-//     try testing.expectError(error.Timeout, mbox.receive(10));
-// }

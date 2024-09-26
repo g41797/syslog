@@ -9,10 +9,7 @@ pub const application = @import("application.zig");
 pub const timestamp = @import("timestamp.zig");
 pub const transport = @import("transport.zig");
 pub const syslog = @import("syslog.zig");
-//---------------------------------
-
-//---------------------------------
-//pub const mailbox = @import("../deps/mailbox/src/mailbox.zig");
+pub const syslogtests = @import("syslog_tests.zig");
 //---------------------------------
 
 test {
