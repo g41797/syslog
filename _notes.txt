@@ -358,6 +358,8 @@ Use git submodule
 
     Once manually:
         git submodule add https://github.com/g41797/mailbox src/deps/mailbox
+        git submodule add https://github.com/frmdstryr/zig-datetime src/deps/zig-datetime
+        git submodule add https://github.com/ikskuh/zig-network src/deps/zig-network
 
     Periodically :-(
         git submodule update --remote

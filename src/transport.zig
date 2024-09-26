@@ -1,7 +1,7 @@
 //---------------------------------
 const std = @import("std");
 const testing = std.testing;
-pub const network = @import("./zig-network/network.zig");
+pub const network = @import("deps/zig-network/network.zig");
 //---------------------------------
 
 //---------------------------------
