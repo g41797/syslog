@@ -19,9 +19,12 @@ pub const MAX_APP_NAME: u8 = 48;
 const AppName = ShortString(MAX_APP_NAME);
 const HostName = ShortString(MAX_HOST_NAME);
 
+pub const DefaultAppName = "zigprocess";
+pub const DefaultFacility: rfc5424.Facility = .local7;
+
 pub const ApplicationOpts = struct {
-    name: []const u8 = "zigprocess",
-    fcl: rfc5424.Facility = .local7,
+    name: []const u8 = DefaultAppName,
+    fcl: rfc5424.Facility = DefaultFacility,
 };
 
 pub const Application = struct {
@@ -31,19 +34,6 @@ pub const Application = struct {
     host_name: HostName,
     procid: pid.ProcID,
     fcl: rfc5424.Facility = undefined,
-
-    // pub fn init(app: *Application, opts: ApplicationOpts) !void {
-    //
-    //     _ = try app.*.app_name.fillFrom(opts.name);
-    //
-    //     _ = try pid.storePID(&app.*.procid);
-    //
-    //     _ = try app.setHostName();
-    //
-    //     app.*.fcl = opts.fcl;
-    //
-    //     return;
-    // }
 
     pub fn init(opts: ApplicationOpts) !Application {
         var app: Application = undefined;

@@ -14,11 +14,15 @@ const TransportError = error{
     AlreadyConnected,
 };
 
+pub const DefaultProto = .udp;
+pub const DefaultAddr = "127.0.0.1";
+pub const DafaultPort = 514;
+
 pub const TransportOpts = struct {
-    proto: Protocol = .udp,
+    proto: Protocol = DefaultProto,
     // either ip or host
-    addr: []const u8 = "127.0.0.1",
-    port: u16 = 514,
+    addr: []const u8 = DefaultAddr,
+    port: u16 = DafaultPort,
 };
 
 pub const Sender = struct {

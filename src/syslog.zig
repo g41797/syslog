@@ -17,6 +17,17 @@ pub const Severity = rfc5424.Severity;
 pub const Sender = transport.Sender;
 //---------------------------------
 
+pub const SyslogOpts = struct {
+    // application:
+    name: []const u8 = application.DefaultAppName,
+    fcl: rfc5424.Facility = application.DefaultFacility,
+
+    // transport:
+    proto: Protocol = transport.DefaultProto,
+    addr: []const u8 = transport.DefaultAddr,
+    port: u16 = transport.DafaultPort,
+};
+
 pub const Syslog = struct {
     mutex: Mutex = .{},
     frmtr: Formatter = undefined,
@@ -24,7 +35,7 @@ pub const Syslog = struct {
     ready: bool = false,
     filter: Severity = .debug,
 
-    pub fn init(slog: *Syslog, appConf: ApplicationOpts, transpConf: TransportOpts) !void {
+    pub fn init(slog: *Syslog, conf: SyslogOpts) !void {
         slog.mutex.lock();
         defer slog.mutex.unlock();
 
@@ -36,8 +47,8 @@ pub const Syslog = struct {
         const allocator = gpa.allocator();
 
         return .{
-            .frmtr = Formatter.init(allocator, appConf),
-            .sndr = Sender.connect(allocator, transpConf),
+            .frmtr = Formatter.init(allocator, .{ conf.name, conf.fcl }),
+            .sndr = Sender.connect(allocator, .{ conf.proto, conf.addr, conf.port }),
             .ready = true,
         };
     }
