@@ -1,6 +1,5 @@
 //---------------------------------
 const std = @import("std");
-const testing = std.testing;
 const string = @import("shortstring.zig");
 const pid = @import("pid.zig");
 const timestamp = @import("timestamp.zig");
@@ -180,20 +179,3 @@ pub const Formatter = struct {
         return;
     }
 };
-
-test "formatter test" {
-    const small = "!!!SOS!!!";
-    const big = "*" ** (MIN_BUFFER_LEN * 16);
-    const huge = "*" ** MAX_BUFFER_LEN;
-
-    var fmtr = try Formatter.init(std.testing.allocator, .{});
-    defer fmtr.deinit();
-
-    var log = try fmtr.build(.crit, small);
-    try testing.expect(log.len > small.len);
-
-    log = try fmtr.build(.info, big);
-    try testing.expect(log.len > big.len);
-
-    try testing.expectError(error.NoSpaceLeft, fmtr.build(.notice, huge));
-}

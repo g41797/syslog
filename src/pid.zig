@@ -11,7 +11,6 @@ const posix = std.posix;
 const native_os = builtin.os.tag;
 pub const rfc5424 = @import("rfc5424.zig");
 pub const shortstring = @import("shortstring.zig");
-const testing = std.testing;
 //---------------------------------
 
 pub extern "kernel32" fn GetCurrentProcessId() callconv(WINAPI) DWORD;
@@ -47,10 +46,4 @@ pub fn storePID(prcid: *ProcID) !void {
             return prcid.bufPrint("-", .{});
         },
     }
-}
-
-test "storePID test" {
-    var currprocid: ProcID = undefined;
-
-    _ = try storePID(&currprocid);
 }

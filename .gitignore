@@ -1,5 +1,11 @@
-**/.zig-cache
-**/.zig-out
+**/.zig-cache/
+**/.zig-out/
 .idea/
+src/deps/mailbox/.zig-cache/
+src/deps/mailbox/.zig-out/
+src/deps/zig-datetime/.zig-cache/
+src/deps/zig-datetime/.zig-out/
+src/deps/zig-network/.zig-cache/
+src/deps/zig-network/.zig-out/
 
 

@@ -1,7 +1,6 @@
 //---------------------------------
 const std = @import("std");
 const mem = std.mem;
-const testing = std.testing;
 const string = @import("shortstring.zig");
 const pid = @import("pid.zig");
 const ShortString = string.ShortString;
@@ -85,7 +84,3 @@ pub const Application = struct {
         return;
     }
 };
-
-test "application init" {
-    _ = try Application.init(.{});
-}

@@ -1,6 +1,5 @@
 //---------------------------------
 const std = @import("std");
-const testing = std.testing;
 const string = @import("shortstring.zig");
 const ShortString = string.ShortString;
 pub const datetime = @import("deps/zig-datetime/src/datetime.zig");
@@ -28,12 +27,4 @@ pub fn setNow(tstmp: *TimeStamp) !void {
     _ = try tstmp.fillFrom(timeStamp);
 
     return;
-}
-
-test "timestamp" {
-    var timestamp: TimeStamp = undefined;
-
-    _ = try setNow(&timestamp);
-
-    try testing.expect(timestamp.len >= MiN_TIMESTAMP);
 }

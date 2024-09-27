@@ -1,6 +1,5 @@
 //---------------------------------
 const std = @import("std");
-const testing = std.testing;
 pub const network = @import("deps/zig-network/network.zig");
 //---------------------------------
 
@@ -69,14 +68,3 @@ pub const Sender = struct {
         return;
     }
 };
-
-// test "Connect to an tcpbin.com ipv4" { // Just for testing that name may be also ip address
-//
-//     try network.init();
-//     defer network.deinit();
-//
-//     // ping -4 tcpbin.com -c 10
-//
-//     const sock = try network.connectToHost(std.testing.allocator, "45.79.112.203", 4242, .tcp);
-//     defer sock.close();
-// }

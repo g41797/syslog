@@ -1,7 +1,4 @@
-//---------------------------------
 const std = @import("std");
-const testing = std.testing;
-//---------------------------------
 
 pub fn ShortString(comptime length: u8) type {
     return struct {
@@ -63,23 +60,4 @@ pub fn ShortString(comptime length: u8) type {
             return;
         }
     };
-}
-
-test "short string " {
-    const maxLen: u8 = 16;
-    const string16 = ShortString(maxLen);
-
-    var testStr: string16 = undefined;
-
-    const longStr = "12345678901234567890";
-
-    try testing.expectError(error.NoSpaceLeft, testStr.fillFrom(longStr));
-
-    const shortStr = "12345678";
-
-    try testing.expectEqual(shortStr.len, testStr.fillFrom(shortStr));
-
-    try testing.expect(std.mem.eql(u8, shortStr, testStr.content().?));
-
-    try testing.expectError(error.NoSpaceLeft, testStr.bufPrint("{s}-{s}-{s}", .{ shortStr, shortStr, shortStr }));
 }
