@@ -343,7 +343,7 @@ Simple Scalable Unbounded Queue
 
 WTF is Build.Zig.Zon and Build.Zig
     https://zig.news/edyu/zig-package-manager-wtf-is-zon-2-0110-update-1jo3
-    https://github.com/edyu/wtf-zig-zon-2
+        https://github.com/edyu/wtf-zig-zon-2
     https://github.com/beachglasslabs/zig-duckdb
 
 Zig-DNS
@@ -380,3 +380,5 @@ Heap Memory and Allocators
 Zig loops
     https://gencmurat.com/en/posts/zig-loops/
 
+Listening ports
+    sudo netstat --tcp --udp --listening --programs --numeric
