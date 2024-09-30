@@ -22,7 +22,7 @@ jobs:
         with:
           submodules: true
 
-      - uses: goto-bus-stop/setup-zig@v2
+      - uses: mlugg/setup-zig@v1
         with:
           version: 0.13.0
           cache: false
