@@ -65,7 +65,7 @@ pub const Sender = struct {
 
         while (start < data.len) {
             const block = data[start..];
-            const done = try sndr.sock.send(block);
+            const done = try sndr.socket.send(block);
             start += done;
         }
 

@@ -79,13 +79,11 @@ pub const Formatter = struct {
     appl: Application = undefined,
     timestamp: timestamp.TimeStamp = undefined,
     msgid: i32 = undefined,
-    buffer: ?[]u8 = undefined,
+    buffer: ?[]u8 = null,
     len: usize = undefined,
     fbs: std.io.FixedBufferStream([]u8) = undefined,
 
-    pub fn init(allocator: Allocator, opts: application.ApplicationOpts) !Formatter {
-        var frmtr: Formatter = .{};
-
+    pub fn init(frmtr: *Formatter, allocator: Allocator, opts: application.ApplicationOpts) !void {
         frmtr.msgid = 0;
         frmtr.len = MIN_BUFFER_LEN;
         frmtr.buffer = null;
@@ -94,7 +92,7 @@ pub const Formatter = struct {
 
         _ = try frmtr.alloc();
 
-        return frmtr;
+        return;
     }
 
     pub fn deinit(frmtr: *Formatter) void {
@@ -120,7 +118,8 @@ pub const Formatter = struct {
             }
         }
 
-        return frmtr.*.fbs.getWritten();
+        const gw = frmtr.*.fbs.getWritten();
+        return gw;
     }
 
     fn print(frmtr: *Formatter, svr: Severity, comptime fmt: []const u8, msg: anytype) !void {
@@ -130,7 +129,7 @@ pub const Formatter = struct {
         // EXTHEADER    = <PRV>1 SP TIMESTAMP SP HOSTNAME SP APP-NAME SP PROCID SP MSGID SP NILVALUE
         // SYSLOG-MSG   = EXTHEADER [SP MSG]
         //-----------------------------------------------------------------------------------
-        _ = try frmtr.*.fbs.writer().print("<{0d:0^3}>1 {1s} {2s} {3s} {4s} {5d}  <-> ", .{
+        _ = try frmtr.*.fbs.writer().print("<{0d:0^3}>1 {1s} {2s} {3s} {4s} {5d} - ", .{
             priority(frmtr.*.appl.fcl, svr),
             frmtr.*.timestamp.content().?,
             frmtr.*.appl.host_name.content().?,
@@ -151,6 +150,9 @@ pub const Formatter = struct {
 
         if (frmtr.buffer == null) {
             frmtr.buffer = try frmtr.allocator.alloc(u8, frmtr.len);
+            // https://ziglang.org/documentation/0.8.0/#toc-memset
+            for (frmtr.buffer.?.ptr[0..frmtr.len]) |*b| b.* = 0xff;
+
             frmtr.fbs = std.io.fixedBufferStream(frmtr.buffer.?);
             return;
         }

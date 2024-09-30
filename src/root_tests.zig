@@ -29,7 +29,8 @@ test "formatter test" {
     const big = "*" ** (rfc5424.MIN_BUFFER_LEN * 16);
     const huge = "*" ** rfc5424.MAX_BUFFER_LEN;
 
-    var fmtr = try rfc5424.Formatter.init(std.testing.allocator, .{});
+    var fmtr = rfc5424.Formatter{};
+    _ = try fmtr.init(std.testing.allocator, .{});
     defer fmtr.deinit();
 
     var log = try fmtr.build(.crit, small);
