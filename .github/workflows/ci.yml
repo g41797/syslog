@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows]
+        os: [macos, ubuntu, windows]
 
     steps:
       - if: matrix.os == 'windows'
