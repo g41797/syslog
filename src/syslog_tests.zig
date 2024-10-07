@@ -8,7 +8,7 @@ const rfc = @import("rfc5424.zig");
 const network = @import("deps/zig-network/network.zig");
 //---------------------------------
 
-            const Thread = std.Thread;
+const Thread = std.Thread;
 const Allocator = std.mem.Allocator;
 
 const MsgBlock = struct {
@@ -89,67 +89,65 @@ test "init/deinit syslogd test" {
     sd.waitFinish();
 }
 
+test "Darwin: connection-mode socket was connected already" {
+    const port: u16 = 12345;
 
-        test "Darwin: connection-mode socket was connected already" {
-            const port: u16 = 12345;
+    const Server = struct {
+        const Self = @This();
+        port: u16 = port,
+        socket: network.Socket = undefined,
+        thread: Thread = undefined,
 
-            const Server = struct {
-                const Self = @This();
-                port: u16 = port,
-                socket: network.Socket = undefined,
-                thread: Thread = undefined,
+        fn start(srv: *Self) !void {
+            try network.init();
+            errdefer network.deinit();
 
-                fn start(srv: *Self) !void {
-                    try network.init();
-                    errdefer network.deinit();
+            srv.socket = try network.Socket.create(.ipv4, .udp);
+            errdefer srv.socket.close();
+            _ = try srv.socket.enablePortReuse(true);
 
-                    srv.socket = try network.Socket.create(.ipv4, .udp);
-                    errdefer srv.socket.close();
-                    _ = try srv.socket.enablePortReuse(true);
-
-                    const bindAddr = network.EndPoint{
-                        .address = network.Address{ .ipv4 = network.Address.IPv4.any },
-                        .port = srv.port,
-                    };
-
-                    try srv.socket.bind(bindAddr);
-                    srv.thread = std.Thread.spawn(.{}, run, .{srv}) catch unreachable;
-                    return;
-                }
-
-                fn run(srv: *Self) void {
-                    defer {
-                        srv.socket.close();
-                        network.deinit();
-                    }
-                    var buff: [128]u8 = undefined;
-                    _ = srv.socket.receive(buff[0..]) catch return;
-                    return;
-                }
-
-                fn waitFinish(srv: *Self) void {
-                    srv.thread.join();
-                }
+            const bindAddr = network.EndPoint{
+                .address = network.Address{ .ipv4 = network.Address.IPv4.any },
+                .port = srv.port,
             };
 
-
-            var srv: Server = .{};
-            try srv.start();
-            defer srv.waitFinish();
-
-            const addr: []const u8 = "127.0.0.1";
-
-            try network.init();
-            defer network.deinit();
-
-            const sock = try network.connectToHost(std.testing.allocator, addr, port, .udp);
-            defer sock.close();
-
-            var buff: [128]u8 = undefined;
-            _ = try sock.send(buff[0..]);
-
+            try srv.socket.bind(bindAddr);
+            srv.thread = std.Thread.spawn(.{}, run, .{srv}) catch unreachable;
             return;
         }
+
+        fn run(srv: *Self) void {
+            defer {
+                srv.socket.close();
+                network.deinit();
+            }
+            var buff: [128]u8 = undefined;
+            _ = srv.socket.receive(buff[0..]) catch return;
+            return;
+        }
+
+        fn waitFinish(srv: *Self) void {
+            srv.thread.join();
+        }
+    };
+
+    var srv: Server = .{};
+    try srv.start();
+    defer srv.waitFinish();
+
+    const addr: []const u8 = "127.0.0.1";
+
+    try network.init();
+    defer network.deinit();
+
+    const sock = try network.connectToHost(std.testing.allocator, addr, port, .udp);
+    defer sock.close();
+
+    var buff: [128]u8 = undefined;
+    _ = try sock.send(buff[0..]);
+
+    return;
+}
 
 test "hellozig test" {
     try hellozig();
