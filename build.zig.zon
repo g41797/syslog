@@ -27,6 +27,10 @@
             .url = "https://github.com/g41797/mailbox/archive/master.tar.gz",
             .hash = "12208d8777b69f62cccf70b4372d8c31a22bb022881279713d424689d6555532d389",
         },
+        .@"zig-datetime" = .{
+            .url = "git+https://github.com/frmdstryr/zig-datetime#70aebf28fb3e137cd84123a9349d157a74708721",
+            .hash = "122077215ce36e125a490e59ec1748ffd4f6ba00d4d14f7308978e5360711d72d77f",
+        },
     },
     .paths = .{
         "build.zig",

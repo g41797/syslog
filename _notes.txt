@@ -382,3 +382,12 @@ Zig loops
 
 Listening ports
     sudo netstat --tcp --udp --listening --programs --numeric
+
+Import
+    zig fetch --save-exact  https://github.com/g41797/mailbox/archive/master.tar.gz
+
+    zig fetch --save=zig-datetime git+https://github.com/frmdstryr/zig-datetime
+
+
+
+

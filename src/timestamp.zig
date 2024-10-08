@@ -2,8 +2,9 @@
 const std = @import("std");
 const string = @import("shortstring.zig");
 const ShortString = string.ShortString;
-pub const datetime = @import("deps/zig-datetime/src/datetime.zig");
-pub const timezones = @import("deps/zig-datetime/src/timezones.zig");
+pub const zig_dt = @import("zig-datetime");
+pub const datetime = zig_dt.datetime;
+pub const timezones = zig_dt.timezones;
 //---------------------------------
 
 // TIMESTAMP        = NILVALUE / FULL-DATE "T" FULL-TIME

@@ -1,9 +1,3 @@
-[submodule "src/deps/mailbox"]
-	path = src/deps/mailbox
-	url = https://github.com/g41797/mailbox
-[submodule "src/deps/zig-datetime"]
-	path = src/deps/zig-datetime
-	url = https://github.com/frmdstryr/zig-datetime
 [submodule "src/deps/zig-network"]
 	path = src/deps/zig-network
 	url = https://github.com/ikskuh/zig-network
