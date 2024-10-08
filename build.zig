@@ -15,6 +15,12 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
+    const mailbox = b.dependency("mailbox", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+
     const lib = b.addStaticLibrary(.{
         .name = "syslog",
         // In this case the main source file is merely a path, however, in more
@@ -36,6 +42,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+
+    lib_unit_tests.root_module.addImport("mailbox", mailbox.module("mailbox"));
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 

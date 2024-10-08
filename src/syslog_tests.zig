@@ -1,7 +1,7 @@
 //---------------------------------
 const std = @import("std");
 const testing = std.testing;
-const mailbox = @import("deps/mailbox/src/mailbox.zig");
+const mailbox = @import("mailbox");
 const syslog = @import("syslog.zig");
 const transport = @import("transport.zig");
 const rfc = @import("rfc5424.zig");

@@ -1,3 +1,5 @@
+/zig-out/
+/zig-cache/
 **/.zig-cache/
 **/.zig-out/
 .idea/
@@ -7,5 +9,4 @@ src/deps/zig-datetime/.zig-cache/
 src/deps/zig-datetime/.zig-out/
 src/deps/zig-network/.zig-cache/
 src/deps/zig-network/.zig-out/
-
 
