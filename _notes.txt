@@ -301,7 +301,7 @@ Get a tarball of any repo directly
         zig build test -freference-trace --summary all
 
     IDE:
-    /usr/bin/zig test --color on /home/g41797/CLionProjects/github.com/g41797/ziglog/src/root.zig -O Debug
+    /usr/bin/zig test --color on /home/g41797/CLionProjects/github.com/g41797/syslog/src/root.zig -O Debug
 
     /usr/bin/zig build test --color on $PWD/src/root.zig -O Debug -freference-trace --summary all
 
