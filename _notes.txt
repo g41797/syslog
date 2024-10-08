@@ -388,6 +388,7 @@ Import
 
     zig fetch --save=zig-datetime git+https://github.com/frmdstryr/zig-datetime
 
+    zig fetch --save=network git+https://github.com/ikskuh/zig-network
 
 
 

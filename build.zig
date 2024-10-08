@@ -25,6 +25,11 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const zig_network = b.dependency("network", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     const lib = b.addStaticLibrary(.{
         .name = "syslog",
         // In this case the main source file is merely a path, however, in more
@@ -35,6 +40,7 @@ pub fn build(b: *std.Build) void {
     });
 
     lib.root_module.addImport("zig-datetime", zig_datetime.module("zig-datetime"));
+    lib.root_module.addImport("network", zig_network.module("network"));
 
     // This declares intent for the library to be installed into the standard
     // location when the user invokes the "install" step (the default step when
@@ -49,6 +55,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    lib_unit_tests.root_module.addImport("network", zig_network.module("network"));
     lib_unit_tests.root_module.addImport("zig-datetime", zig_datetime.module("zig-datetime"));
     lib_unit_tests.root_module.addImport("mailbox", mailbox.module("mailbox"));
 

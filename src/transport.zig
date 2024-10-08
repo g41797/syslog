@@ -1,6 +1,6 @@
 //---------------------------------
 const std = @import("std");
-pub const network = @import("deps/zig-network/network.zig");
+pub const network = @import("network");
 //---------------------------------
 
 //---------------------------------

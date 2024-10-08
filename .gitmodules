@@ -1,3 +1,0 @@
-[submodule "src/deps/zig-network"]
-	path = src/deps/zig-network
-	url = https://github.com/ikskuh/zig-network

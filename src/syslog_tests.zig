@@ -5,7 +5,7 @@ const mailbox = @import("mailbox");
 const syslog = @import("syslog.zig");
 const transport = @import("transport.zig");
 const rfc = @import("rfc5424.zig");
-const network = @import("deps/zig-network/network.zig");
+const network = @import("network");
 //---------------------------------
 
 const Thread = std.Thread;
