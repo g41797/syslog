@@ -37,6 +37,7 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
+        .single_threaded = false,
     });
 
     lib.root_module.addImport("zig-datetime", zig_datetime.module("zig-datetime"));

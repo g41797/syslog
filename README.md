@@ -1,6 +1,6 @@
 ![](_logo/syslogzig-removebg.png)
 
-# syslog
+# Zig syslog client
 
 [![CI](https://github.com/g41797/syslog/actions/workflows/ci.yml/badge.svg)](https://github.com/g41797/syslog/actions/workflows/ci.yml)
 

@@ -171,14 +171,15 @@ fn hellozig() !void {
     defer logger.deinit();
 
     // Send syslog message
-    try logger.write_info("Hello Zig");
+    try logger.write_info("Hello, Zig!");
 
     const result = try sd.msgs.receive(10000000000);
     defer std.testing.allocator.destroy(result);
     const len = result.letter.len;
+    std.debug.print("\n{s}\n", .{result.letter.buff[0..len]});
 
-    // <190>1 2024-09-30T11:11:21+00:00 BLKF zigprocess 6734 1 - Hello Zig
-    _ = std.mem.containsAtLeast(u8, result.letter.buff[0..len], 1, "Hello Zig");
+    // <190>1 2024-10-09T09:07:11+00:00 BLKF zigprocess 18548 1 - Hello, Zig!
+    _ = std.mem.containsAtLeast(u8, result.letter.buff[0..len], 1, "Hello, Zig!");
 
     return;
 }
