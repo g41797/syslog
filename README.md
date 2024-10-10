@@ -46,7 +46,7 @@ Let's see what this message consist of:
 
    
      
-#### Priority
+### Priority
 
 >              Priority = **Facility** * 8 + *Severity* 
 
@@ -94,11 +94,11 @@ Usually zig process will use [.local0-.local7] facilities
 |7| .debug           |  debug-level messages             |
 
 
-#### Quiz
+### Quiz
 
 What are *Facility* and *Severity* of **"Hello, Zig!"** message?
 
-#### For leisure time
+### For leisure time
 
 - [What is Syslog?](https://www.auvik.com/franklyit/blog/what-is-syslog/)
 - [syslog-ng Open Source Edition](https://www.syslog-ng.com/products/open-source-log-management/)
@@ -106,6 +106,32 @@ What are *Facility* and *Severity* of **"Hello, Zig!"** message?
 - [Old brave syslogd](https://linux.die.net/man/8/syslogd)
 - [Kafka syslog connector](https://www.confluent.io/hub/confluentinc/kafka-connect-syslog)
 - [Nats syslog connector](https://github.com/g41797/syslog2nats)
+
+## Installation
+
+Add *syslog* to build.zig.zon:
+```bach
+zig fetch --save=syslog git+https://github.com/g41797/syslog
+```
+
+Add *syslog* to build.zig:
+```zig
+    const syslog = b.dependency("syslog", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const lib = b.addStaticLibrary(..);
+    lib.root_module.addImport("syslog", syslog.module("syslog"));
+
+    const lib_unit_tests = b.addTest(...);
+    lib_unit_tests.root_module.addImport("syslog", syslog.module("syslog"));
+```
+
+Import *syslog*: 
+```zig
+const syslog = @import("syslog");
+```
 
 
 ![](_logo/CLion_icon.png)
