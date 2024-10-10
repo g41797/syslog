@@ -131,6 +131,6 @@ const syslog = @import("syslog");
 ```
 
 
-[![clion](_logo/CLion_icon.png)][refclion]
+Powered by  [![clion](_logo/CLion_icon.png)][refclion]
 
 [refclion]: https://www.jetbrains.com/clion/
