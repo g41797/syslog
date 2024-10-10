@@ -48,7 +48,7 @@ Let's see what this message consist of:
      
 ### Priority
 
->              Priority = **Facility** * 8 + *Severity* 
+>              Priority = Facility * 8 + Severity 
 
 **Facility** represents the machine process that created the Syslog event
 
@@ -74,12 +74,9 @@ Let's see what this message consist of:
 | .local5               | 21 |     local use 5 |
 | .local6               | 22 |     local use 6 |
 | .local7               | 23 |     local use 7 |
-
-Usually zig process will use [.local0-.local7] facilities 
-(unless you are going to develop cron or ftp).
-   
-   
-
+ 
+     
+  
 **Severity** describes the severity level of the syslog message in question.
 
 | Level | rfc5424.Severity | Description |
