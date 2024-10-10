@@ -27,13 +27,13 @@
             .url = "https://github.com/g41797/mailbox/archive/master.tar.gz",
             .hash = "12208d8777b69f62cccf70b4372d8c31a22bb022881279713d424689d6555532d389",
         },
-        .@"zig-datetime" = .{
-            .url = "git+https://github.com/frmdstryr/zig-datetime",
-            .hash = "122077215ce36e125a490e59ec1748ffd4f6ba00d4d14f7308978e5360711d72d77f",
-        },
         .network = .{
             .url = "git+https://github.com/ikskuh/zig-network#805ce63eec48373ec497542f18f19d7c484b9b2e",
             .hash = "122007f014c736cee735f1fe71660e39aa9f8c9351deab2e35c4dd9ab69d37d8db46",
+        },
+        .@"zig-datetime" = .{
+            .url = "git+https://github.com/frmdstryr/zig-datetime#70aebf28fb3e137cd84123a9349d157a74708721",
+            .hash = "122077215ce36e125a490e59ec1748ffd4f6ba00d4d14f7308978e5360711d72d77f",
         },
     },
     .paths = .{
