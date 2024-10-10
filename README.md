@@ -13,6 +13,9 @@
 | RFC       | Subset of [RFC5424](https://datatracker.ietf.org/doc/html/rfc5424) |
 | Tested on |       Mac, Windows, Linux                   |
   
+For the curious: [IT Explained:
+Syslog](https://www.paessler.com/it-explained/syslog)  
+  
 
 ## Hello, Zig!
      
@@ -31,7 +34,7 @@ Let's see what this message consist of:
    
 | Value | RFC Definition  | Description                                            |
 |:-----------:|:---------------:|:-------------------------------------------------------|
-|   190     |     PRIVAL      | [Priority](####priority)                               |
+|   190     |     PRIVAL      | [Priority](#priority)                               |
 |   1     |     VERSION     | Always 1                                               |
 |   2024-10-09T09:07:11+00:00     |    TIMESTAMP    | FULL-DATE "T" FULL-TIME                                |
 |   BLKF     |    HOSTNAME     | Hostname or '-'                                        |
@@ -45,7 +48,7 @@ Let's see what this message consist of:
      
 #### Priority
 
->Priority = **Facility** * 8 + *Severity* 
+>              Priority = **Facility** * 8 + *Severity* 
 
 **Facility** represents the machine process that created the Syslog event
 
@@ -94,5 +97,15 @@ Usually zig process will use [.local0-.local7] facilities
 #### Quiz
 
 What are *Facility* and *Severity* of **"Hello, Zig!"** message?
+
+#### For leisure time
+
+- [What is Syslog?](https://www.auvik.com/franklyit/blog/what-is-syslog/)
+- [syslog-ng Open Source Edition](https://www.syslog-ng.com/products/open-source-log-management/)
+- [The rocket-fast system for log processing](https://www.rsyslog.com/)
+- [Old brave syslogd](https://linux.die.net/man/8/syslogd)
+- [Kafka syslog connector](https://www.confluent.io/hub/confluentinc/kafka-connect-syslog)
+- [Nats syslog connector](https://github.com/g41797/syslog2nats)
+
 
 ![](_logo/CLion_icon.png)
