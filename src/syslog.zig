@@ -33,7 +33,7 @@ pub const Syslog = struct {
     frmtr: Formatter = undefined,
     sndr: Sender = undefined,
     ready: bool = false,
-    filter: Severity = .debug,
+    filter: ?Severity = null,
 
     pub fn init(slog: *Syslog, allocator: Allocator, conf: SyslogOpts) !void {
         slog.mutex.lock();
@@ -121,10 +121,11 @@ pub const Syslog = struct {
             return error.NotReady;
         }
 
-        if (@intFromEnum(svr) > @intFromEnum(slog.filter)) {
-            return;
+        if(slog.filter != null){
+            if (@intFromEnum(svr) >= @intFromEnum(slog.filter.?)) {
+                return;
+            }
         }
-
         _ = try slog.*.sndr.send(try slog.*.frmtr.build(svr, msg));
 
         errdefer slog.ready = false;
@@ -140,8 +141,10 @@ pub const Syslog = struct {
             return error.NotReady;
         }
 
-        if (@intFromEnum(svr) > @intFromEnum(slog.filter)) {
-            return;
+        if(slog.filter != null){
+            if (@intFromEnum(svr) >= @intFromEnum(slog.filter.?)) {
+                return;
+            }
         }
 
         _ = try slog.*.sndr.send(try slog.*.frmtr.format(svr, fmt, msg));
@@ -151,7 +154,7 @@ pub const Syslog = struct {
         return;
     }
 
-    pub fn setfilter(slog: *Syslog, svr: Severity) void {
+    pub fn setfilter(slog: *Syslog, svr: ?Severity) void {
         slog.mutex.lock();
         defer slog.mutex.unlock();
 

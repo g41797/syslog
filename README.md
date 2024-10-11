@@ -1,8 +1,12 @@
 ![](_logo/syslogzig-removebg.png)
 
-# Zig syslog client
+# <center>Zig syslog client</center>
+
+<center>
 
 [![CI](https://github.com/g41797/syslog/actions/workflows/ci.yml/badge.svg)](https://github.com/g41797/syslog/actions/workflows/ci.yml)[![Wiki](https://img.shields.io/badge/Wikipedia-%23000000.svg?style=for-the-badge&logo=wikipedia&logoColor=white)](https://en.wikipedia.org/wiki/Syslog)
+
+</center>
 
 
   This is a [syslog](https://en.wikipedia.org/wiki/Syslog) client library for Zig:
@@ -130,7 +134,76 @@ Import *syslog*:
 const syslog = @import("syslog");
 ```
 
+## Usage
 
-Powered by  [![clion](_logo/CLion_icon.png)][refclion]
+### Configuration
+
+syslog uses following configuration:
+```zig
+pub const SyslogOpts = struct {
+    // application:
+    name: []const u8 = "zigprocess",
+    fcl: rfc5424.Facility = .local7,
+
+    // transport:
+    proto: Protocol = .udp,
+    addr: []const u8 = "127.0.0.1",
+    port: u16 = 514,
+};
+```
+
+### Initialization
+
+```zig
+    var logger: syslog.Syslog = .{};
+    try logger.init(std.testing.allocator, .{
+        .name = "runner",
+        .fcl = .daemon
+        .port = 12345,
+    });
+    defer logger.deinit();
+```
+
+After initialization you can call syslog on different threads.
+
+### Logging  
+There are two groups of APIs:
+- write: message is straight text 
+```zig
+    pub inline fn write_<severity>(slog: *Syslog, msg: []const u8) !void {...}
+    ....
+    logger.write_debug("Hello, Zig!");
+```
+- print: message will be formatted before send
+```zig
+    pub inline fn print_<severity>(slog: *Syslog, comptime fmt: []const u8, msg: anytype) !void {...}
+    ....
+    const name = "World";
+    logger.print_debug("Hello, {s}!", .{name});
+```
+
+### Filtering
+
+Set filter:
+```zig
+    // disable send messages with .info & .debug severities
+    logger.setfilter(.info);// disable send messages with .info & .debug severities 
+```
+
+Reset filter:
+```zig
+    logger.setfilter(null); 
+```
+
+## License
+[MIT](LICENSE)
+
+
+<br />
+<center>
+
+*Powered by*  [![clion](_logo/CLion_icon.png)][refclion]
 
 [refclion]: https://www.jetbrains.com/clion/
+
+</center>

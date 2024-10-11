@@ -170,6 +170,8 @@ fn hellozig() !void {
     });
     defer logger.deinit();
 
+    logger.setfilter(.debug);
+
     // Send syslog message
     try logger.write_info("Hello, Zig!");
 
