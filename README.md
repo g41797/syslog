@@ -5,6 +5,9 @@
 <center>
 
 [![CI](https://github.com/g41797/syslog/actions/workflows/ci.yml/badge.svg)](https://github.com/g41797/syslog/actions/workflows/ci.yml)[![Wiki](https://img.shields.io/badge/Wikipedia-%23000000.svg?style=for-the-badge&logo=wikipedia&logoColor=white)](https://en.wikipedia.org/wiki/Syslog)
+<img src="https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black" width="48" height="24">&nbsp;
+<img src="https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white" width="48" height="24">&nbsp;
+<img src="https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white" width="48" height="24">&nbsp;
 
 </center>
 
