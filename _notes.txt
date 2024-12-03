@@ -393,3 +393,10 @@ Import
 Github MD
     https://gist.github.com/nikhilnayyar002/7a35e653d3d590e317c829243e73b110
 
+
+VSCode configuration
+    variables
+    https://code.visualstudio.com/docs/editor/variables-reference
+
+    launch.json & tasks.json
+    https://gist.github.com/amantuladhar/ee210628d55161ba3046b1ac9ff419a1

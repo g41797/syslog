@@ -121,7 +121,7 @@ pub const Syslog = struct {
             return error.NotReady;
         }
 
-        if(slog.filter != null){
+        if (slog.filter != null) {
             if (@intFromEnum(svr) >= @intFromEnum(slog.filter.?)) {
                 return;
             }
@@ -141,7 +141,7 @@ pub const Syslog = struct {
             return error.NotReady;
         }
 
-        if(slog.filter != null){
+        if (slog.filter != null) {
             if (@intFromEnum(svr) >= @intFromEnum(slog.filter.?)) {
                 return;
             }
