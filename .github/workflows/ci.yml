@@ -1,10 +1,7 @@
 name: CI
 
 on: [push, pull_request]
-
-env:
   
-
 jobs:
   build:
     name: Build and test
