@@ -59,6 +59,7 @@ pub fn build(b: *std.Build) void {
     lib_unit_tests.root_module.addImport("network", zig_network.module("network"));
     lib_unit_tests.root_module.addImport("zig-datetime", zig_datetime.module("zig-datetime"));
     lib_unit_tests.root_module.addImport("mailbox", mailbox.module("mailbox"));
+    b.installArtifact(lib_unit_tests);
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 

@@ -16,6 +16,18 @@
             "type": "shell",
             "command": "zig",
             "args": [
+                 "build",
+                "install",
+                "--summary",
+                "all"
+            ],
+            "group": "test"
+        },
+        {
+            "label": "build_test_org",
+            "type": "shell",
+            "command": "zig",
+            "args": [
                 "test",
                 "${input:testFile}",
                 "--test-no-exec",

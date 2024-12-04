@@ -15,7 +15,7 @@
       "type": "lldb",
       "request": "launch",
       "name": "Debug Test",
-      "program": "${workspaceFolder}/zig-out/test-binary",
+      "program": "${workspaceFolder}/zig-out/bin/test",
       "preLaunchTask": "build_test",
       "args": [],
       "cwd": "${workspaceFolder}",

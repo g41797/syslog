@@ -65,9 +65,13 @@ pub const Application = struct {
 
         var fbAllocator = std.heap.FixedBufferAllocator.init(&buffer);
         const allocator = fbAllocator.allocator();
-        const hostName = std.process.getEnvVarOwned(allocator, envMame) catch "-";
+        var hostName = std.process.getEnvVarOwned(allocator, envMame) catch "";
 
-        defer allocator.free(hostName);
+        if (hostName.len == 0) {
+            hostName = "-";
+        } else {
+            defer allocator.free(hostName);
+        }
 
         _ = try appl.*.host_name.fillFrom(hostName);
 
