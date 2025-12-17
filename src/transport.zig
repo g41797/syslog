@@ -40,20 +40,20 @@ pub const Sender = struct {
     }
 
     pub fn disconnect(sndr: *Sender) void {
-        if (!sndr.connected) {
+        if (!sndr.*.connected) {
             return;
         }
 
         defer network.deinit();
 
-        sndr.connected = false;
-        sndr.socket.close();
+        sndr.*.connected = false;
+        sndr.*.socket.close();
 
         return;
     }
 
     pub fn send(sndr: *Sender, data: []const u8) !void {
-        if (!sndr.connected) {
+        if (!sndr.*.connected) {
             return TransportError.NotConnectedYet;
         }
 
@@ -64,8 +64,8 @@ pub const Sender = struct {
         var start: usize = 0;
 
         while (start < data.len) {
-            const block = data[start..];
-            const done = try sndr.socket.send(block);
+            const block: []const u8 = data[start..];
+            const done: usize = try sndr.*.socket.send(block);
             start += done;
         }
 

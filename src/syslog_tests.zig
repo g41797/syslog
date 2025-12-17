@@ -33,52 +33,52 @@ const Syslogd = struct {
         try network.init();
         errdefer network.deinit();
 
-        sd.loops = loops;
-        sd.socket = try network.Socket.create(.ipv4, .udp);
-        errdefer sd.socket.close();
-        _ = try sd.socket.enablePortReuse(true);
+        sd.*.loops = loops;
+        sd.*.socket = try network.Socket.create(.ipv4, .udp);
+        errdefer sd.*.socket.close();
+        _ = try sd.*.socket.enablePortReuse(true);
 
-        const bindAddr = network.EndPoint{
+        const bindAddr: network.EndPoint = network.EndPoint{
             .address = network.Address{ .ipv4 = network.Address.IPv4.any },
-            .port = sd.port,
+            .port = sd.*.port,
         };
 
-        try sd.socket.bind(bindAddr);
-        sd.msgs = .{};
-        sd.thread = std.Thread.spawn(.{}, run, .{sd}) catch unreachable;
+        try sd.*.socket.bind(bindAddr);
+        sd.*.msgs = .{};
+        sd.*.thread = std.Thread.spawn(.{}, run, .{sd}) catch unreachable;
 
-        sd.ready = true;
+        sd.*.ready = true;
         return;
     }
 
     fn run(sd: *Syslogd) void {
         defer {
-            sd.socket.close();
+            sd.*.socket.close();
             network.deinit();
         }
 
-        for (0..sd.loops) |_| {
-            const msg = std.testing.allocator.create(Msgs.Envelope) catch break;
-            for (&msg.letter.buff) |*b| {
+        for (0..sd.*.loops) |_| {
+            const msg: *Msgs.Envelope = std.testing.allocator.create(Msgs.Envelope) catch break;
+            for (&msg.*.letter.buff) |*b| {
                 b.* = 0xff;
             }
             errdefer std.testing.allocator.destroy(msg);
 
-            msg.*.letter.len = sd.socket.receive(&msg.letter.buff) catch break;
+            msg.*.letter.len = sd.*.socket.receive(&msg.*.letter.buff) catch break;
 
-            _ = sd.msgs.send(msg) catch break;
+            _ = sd.*.msgs.send(msg) catch break;
         }
     }
 
     fn stop(sd: *Syslogd) !void {
-        if (!sd.ready) {
+        if (!sd.*.ready) {
             return;
         }
-        _ = sd.msgs.close();
+        _ = sd.*.msgs.close();
     }
 
     fn waitFinish(sd: *Syslogd) void {
-        sd.thread.join();
+        sd.*.thread.join();
     }
 };
 
@@ -102,32 +102,32 @@ test "Darwin: connection-mode socket was connected already" {
             try network.init();
             errdefer network.deinit();
 
-            srv.socket = try network.Socket.create(.ipv4, .udp);
-            errdefer srv.socket.close();
-            _ = try srv.socket.enablePortReuse(true);
+            srv.*.socket = try network.Socket.create(.ipv4, .udp);
+            errdefer srv.*.socket.close();
+            _ = try srv.*.socket.enablePortReuse(true);
 
-            const bindAddr = network.EndPoint{
+            const bindAddr: network.EndPoint = network.EndPoint{
                 .address = network.Address{ .ipv4 = network.Address.IPv4.any },
-                .port = srv.port,
+                .port = srv.*.port,
             };
 
-            try srv.socket.bind(bindAddr);
-            srv.thread = std.Thread.spawn(.{}, run, .{srv}) catch unreachable;
+            try srv.*.socket.bind(bindAddr);
+            srv.*.thread = std.Thread.spawn(.{}, run, .{srv}) catch unreachable;
             return;
         }
 
         fn run(srv: *Self) void {
             defer {
-                srv.socket.close();
+                srv.*.socket.close();
                 network.deinit();
             }
             var buff: [128]u8 = undefined;
-            _ = srv.socket.receive(buff[0..]) catch return;
+            _ = srv.*.socket.receive(buff[0..]) catch return;
             return;
         }
 
         fn waitFinish(srv: *Self) void {
-            srv.thread.join();
+            srv.*.thread.join();
         }
     };
 
@@ -140,7 +140,7 @@ test "Darwin: connection-mode socket was connected already" {
     try network.init();
     defer network.deinit();
 
-    const sock = try network.connectToHost(std.testing.allocator, addr, port, .udp);
+    const sock: network.Socket = try network.connectToHost(std.testing.allocator, addr, port, .udp);
     defer sock.close();
 
     var buff: [128]u8 = undefined;
@@ -175,13 +175,13 @@ fn hellozig() !void {
     // Send syslog message
     try logger.write_info("Hello, Zig!");
 
-    const result = try sd.msgs.receive(10000000000);
+    const result: *Msgs.Envelope = try sd.msgs.receive(10000000000);
     defer std.testing.allocator.destroy(result);
-    const len = result.letter.len;
-    std.debug.print("\n{s}\n", .{result.letter.buff[0..len]});
+    const len: usize = result.*.letter.len;
+    std.debug.print("\n{s}\n", .{result.*.letter.buff[0..len]});
 
     // <190>1 2024-10-09T09:07:11+00:00 BLKF zigprocess 18548 1 - Hello, Zig!
-    _ = std.mem.containsAtLeast(u8, result.letter.buff[0..len], 1, "Hello, Zig!");
+    _ = std.mem.containsAtLeast(u8, result.*.letter.buff[0..len], 1, "Hello, Zig!");
 
     return;
 }

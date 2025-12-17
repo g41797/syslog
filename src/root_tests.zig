@@ -25,15 +25,15 @@ test "storePID test" {
 }
 
 test "formatter test" {
-    const small = "!!!SOS!!!";
-    const big = "*" ** (rfc5424.MIN_BUFFER_LEN * 16);
-    const huge = "*" ** rfc5424.MAX_BUFFER_LEN;
+    const small: []const u8 = "!!!SOS!!!";
+    const big: []const u8 = "*" ** (rfc5424.MIN_BUFFER_LEN * 16);
+    const huge: []const u8 = "*" ** rfc5424.MAX_BUFFER_LEN;
 
-    var fmtr = rfc5424.Formatter{};
+    var fmtr: rfc5424.Formatter = rfc5424.Formatter{};
     _ = try fmtr.init(std.testing.allocator, .{});
     defer fmtr.deinit();
 
-    var log = try fmtr.build(.crit, small);
+    var log: []const u8 = try fmtr.build(.crit, small);
     try testing.expect(log.len > small.len);
 
     log = try fmtr.build(.info, big);
@@ -44,15 +44,15 @@ test "formatter test" {
 
 test "short string " {
     const maxLen: u8 = 16;
-    const string16 = shortstring.ShortString(maxLen);
+    const string16: type = shortstring.ShortString(maxLen);
 
     var testStr: string16 = undefined;
 
-    const longStr = "12345678901234567890";
+    const longStr: []const u8 = "12345678901234567890";
 
     try testing.expectError(error.NoSpaceLeft, testStr.fillFrom(longStr));
 
-    const shortStr = "12345678";
+    const shortStr: []const u8 = "12345678";
 
     try testing.expectEqual(shortStr.len, testStr.fillFrom(shortStr));
 

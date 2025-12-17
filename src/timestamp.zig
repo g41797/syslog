@@ -16,16 +16,16 @@ pub const TimeStamp = ShortString(MAX_TIMESTAMP);
 pub fn setNow(tstmp: *TimeStamp) !void {
     var buffer: [MAX_TIMESTAMP]u8 = undefined;
 
-    var fbAllocator = std.heap.FixedBufferAllocator.init(&buffer);
-    const allocator = fbAllocator.allocator();
+    var fbAllocator: std.heap.FixedBufferAllocator = std.heap.FixedBufferAllocator.init(&buffer);
+    const allocator: std.mem.Allocator = fbAllocator.allocator();
 
-    var dt = datetime.Datetime.now();
+    var dt: datetime.Datetime = datetime.Datetime.now();
 
-    const timeStamp = try dt.formatISO8601(allocator, false);
+    const timeStamp: []const u8 = try dt.formatISO8601(allocator, false);
 
     defer allocator.free(timeStamp);
 
-    _ = try tstmp.fillFrom(timeStamp);
+    _ = try tstmp.*.fillFrom(timeStamp);
 
     return;
 }

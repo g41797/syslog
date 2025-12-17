@@ -9,8 +9,8 @@ pub fn ShortString(comptime length: u8) type {
         const Self = @This();
 
         pub fn fillFrom(self: *Self, src: []const u8) error{NoSpaceLeft}!usize {
-            const currlen = src.len;
-            const maxlen = self.*.items.len;
+            const currlen: usize = src.len;
+            const maxlen: usize = self.*.items.len;
 
             if (currlen > maxlen) return error.NoSpaceLeft;
 
@@ -55,7 +55,7 @@ pub fn ShortString(comptime length: u8) type {
                 return;
             }
 
-            const trimed = std.mem.trimRight(u8, self.*.string.?, " \n\r\t");
+            const trimed: []const u8 = std.mem.trimRight(u8, self.*.string.?, " \n\r\t");
             self.*.string = self.*.items[0..trimed.len];
             return;
         }

@@ -84,19 +84,19 @@ pub const Formatter = struct {
     fbs: std.io.FixedBufferStream([]u8) = undefined,
 
     pub fn init(frmtr: *Formatter, allocator: Allocator, opts: application.ApplicationOpts) !void {
-        frmtr.msgid = 0;
-        frmtr.len = MIN_BUFFER_LEN;
-        frmtr.buffer = null;
-        frmtr.allocator = allocator;
-        frmtr.appl = try Application.init(opts);
+        frmtr.*.msgid = 0;
+        frmtr.*.len = MIN_BUFFER_LEN;
+        frmtr.*.buffer = null;
+        frmtr.*.allocator = allocator;
+        frmtr.*.appl = try Application.init(opts);
 
-        _ = try frmtr.alloc();
+        _ = try frmtr.*.alloc();
 
         return;
     }
 
     pub fn deinit(frmtr: *Formatter) void {
-        frmtr.free();
+        frmtr.*.free();
         return;
     }
 
@@ -105,20 +105,20 @@ pub const Formatter = struct {
     }
 
     pub fn format(frmtr: *Formatter, svr: Severity, comptime fmt: []const u8, msg: anytype) ![]const u8 {
-        frmtr.nextid();
+        frmtr.*.nextid();
 
         _ = try timestamp.setNow(&frmtr.*.timestamp);
 
         while (true) {
-            if (frmtr.print(svr, fmt, msg)) |_| {
+            if (frmtr.*.print(svr, fmt, msg)) |_| {
                 break;
             } else |_| {
-                _ = try frmtr.alloc();
+                _ = try frmtr.*.alloc();
                 continue;
             }
         }
 
-        const gw = frmtr.*.fbs.getWritten();
+        const gw: []u8 = frmtr.*.fbs.getWritten();
         return gw;
     }
 
@@ -144,40 +144,40 @@ pub const Formatter = struct {
     }
 
     fn alloc(frmtr: *Formatter) !void {
-        if (frmtr.len >= MAX_BUFFER_LEN) {
+        if (frmtr.*.len >= MAX_BUFFER_LEN) {
             return error.NoSpaceLeft;
         }
 
-        if (frmtr.buffer == null) {
-            frmtr.buffer = try frmtr.allocator.alloc(u8, frmtr.len);
+        if (frmtr.*.buffer == null) {
+            frmtr.*.buffer = try frmtr.*.allocator.alloc(u8, frmtr.*.len);
             // https://ziglang.org/documentation/0.8.0/#toc-memset
-            for (frmtr.buffer.?.ptr[0..frmtr.len]) |*b| b.* = 0xff;
+            for (frmtr.*.buffer.?.ptr[0..frmtr.*.len]) |*b| b.* = 0xff;
 
-            frmtr.fbs = std.io.fixedBufferStream(frmtr.buffer.?);
+            frmtr.*.fbs = std.io.fixedBufferStream(frmtr.*.buffer.?);
             return;
         }
 
-        frmtr.free();
+        frmtr.*.free();
 
-        frmtr.len *= 2;
+        frmtr.*.len *= 2;
 
-        return frmtr.alloc();
+        return frmtr.*.alloc();
     }
 
     fn free(frmtr: *Formatter) void {
-        if (frmtr.buffer != null) {
-            frmtr.allocator.free(frmtr.buffer.?);
-            frmtr.buffer = null;
+        if (frmtr.*.buffer != null) {
+            frmtr.*.allocator.free(frmtr.*.buffer.?);
+            frmtr.*.buffer = null;
         }
         return;
     }
 
     inline fn nextid(frmtr: *Formatter) void {
-        if (frmtr.msgid == MAX_MSGID) {
-            frmtr.msgid = 1;
+        if (frmtr.*.msgid == MAX_MSGID) {
+            frmtr.*.msgid = 1;
             return;
         }
-        frmtr.msgid += 1;
+        frmtr.*.msgid += 1;
         return;
     }
 };

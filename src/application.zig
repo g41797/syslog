@@ -55,7 +55,7 @@ pub const Application = struct {
             return;
         }
 
-        const envMame = switch (native_os) {
+        const envMame: []const u8 = switch (native_os) {
             .windows => "COMPUTERNAME",
             .linux => "HOSTNAME",
             else => unreachable,
@@ -63,9 +63,9 @@ pub const Application = struct {
 
         var buffer: [MAX_HOST_NAME]u8 = undefined;
 
-        var fbAllocator = std.heap.FixedBufferAllocator.init(&buffer);
-        const allocator = fbAllocator.allocator();
-        var hostName = std.process.getEnvVarOwned(allocator, envMame) catch "";
+        var fbAllocator: std.heap.FixedBufferAllocator = std.heap.FixedBufferAllocator.init(&buffer);
+        const allocator: std.mem.Allocator = fbAllocator.allocator();
+        var hostName: []const u8 = std.process.getEnvVarOwned(allocator, envMame) catch "";
 
         if (hostName.len == 0) {
             hostName = "-";

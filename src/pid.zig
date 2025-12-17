@@ -36,14 +36,14 @@ pub const MAX_PROCID: u8 = 128;
 pub const ProcID = shortstring.ShortString(MAX_PROCID);
 
 pub fn storePID(prcid: *ProcID) !void {
-    const currPID = getPID();
+    const currPID: PID = getPID();
 
     switch (native_os) {
         .linux, .windows => {
-            return prcid.bufPrint("{d}", .{currPID});
+            return prcid.*.bufPrint("{d}", .{currPID});
         },
         else => {
-            return prcid.bufPrint("-", .{});
+            return prcid.*.bufPrint("-", .{});
         },
     }
 }
