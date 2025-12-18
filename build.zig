@@ -20,7 +20,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const zig_datetime: *std.Build.Dependency = b.*.dependency("zig-datetime", .{
+    const zig_datetime: *std.Build.Dependency = b.*.dependency("datetime", .{
         .target = target,
         .optimize = optimize,
     });
@@ -40,7 +40,7 @@ pub fn build(b: *std.Build) void {
         .single_threaded = false,
     });
 
-    lib.*.root_module.addImport("zig-datetime", zig_datetime.*.module("zig-datetime"));
+    lib.*.root_module.addImport("datetime", zig_datetime.*.module("datetime"));
     lib.*.root_module.addImport("network", zig_network.*.module("network"));
 
     // This declares intent for the library to be installed into the standard
@@ -57,7 +57,7 @@ pub fn build(b: *std.Build) void {
     });
 
     lib_unit_tests.*.root_module.addImport("network", zig_network.*.module("network"));
-    lib_unit_tests.*.root_module.addImport("zig-datetime", zig_datetime.*.module("zig-datetime"));
+    lib_unit_tests.*.root_module.addImport("datetime", zig_datetime.*.module("datetime"));
     lib_unit_tests.*.root_module.addImport("mailbox", mailbox.*.module("mailbox"));
     b.*.installArtifact(lib_unit_tests);
 

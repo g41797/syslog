@@ -2,7 +2,7 @@
 const std = @import("std");
 const string = @import("shortstring.zig");
 const ShortString = string.ShortString;
-pub const zig_dt = @import("zig-datetime");
+pub const zig_dt = @import("datetime");
 pub const datetime = zig_dt.datetime;
 pub const timezones = zig_dt.timezones;
 //---------------------------------
