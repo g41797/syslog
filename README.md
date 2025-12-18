@@ -198,5 +198,14 @@ Reset filter:
     logger.setfilter(null); 
 ```
 
+## AI Usage
+
+The following refactoring was performed by [Claude Code](https://claude.com/product/claude-code):
+
+* **Explicit Pointer Dereferencing**: Removed "Automatic pointer dereference" and replaced it with explicit `ptr.*` syntax.
+* **Explicit Type Declaration**: Removed "Type Inference" by adding explicit types to all variable declarations.
+
+Related configuration files and guidelines are located in the [.claude/rules](.claude/rules) directory.
+
 ## License
 [MIT](LICENSE)
