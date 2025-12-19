@@ -35,6 +35,12 @@ CRITICAL:
 - Edit files in-place
 - Zero functionality changes
 - Verify syntax after each file
+- **NEVER execute git commands automatically**
+- **ALWAYS ask for explicit user permission before ANY git operation**
+- This includes: `git add`, `git commit`, `git push`, `git checkout`, `git branch`, etc.
+- When suggesting git operations, present the commands and wait for user approval
+- Example: "I suggest running: `git add file.zig`. Should I proceed?" and wait for confirmation
+
 
 PROCESS:
 1. List all .zig files
